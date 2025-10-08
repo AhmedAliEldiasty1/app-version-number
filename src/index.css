@@ -185,6 +185,31 @@ body.language-switched .container {
   margin-right: 10px;
 }
 
+/* RTL Dropdown Arrow */
+[dir="rtl"] .form-group select {
+  background-position: left 16px center, left 8px center;
+  padding-right: 20px;
+  padding-left: 55px;
+}
+
+[dir="rtl"] .form-group select:disabled {
+  background-position: left 16px center, left 8px center;
+}
+
+[dir="rtl"] .form-group select:focus {
+  background-position: left 16px center, left 8px center;
+}
+
+[dir="rtl"] .form-group input {
+  padding: 16px 20px;
+}
+
+/* RTL required star */
+[dir="rtl"] .form-group .required {
+  margin-left: 0;
+  margin-right: 4px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -385,18 +410,72 @@ code {
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
+  padding: 16px 45px 16px 20px;
+  border: 2px solid #e8eaf0;
+  border-radius: 14px;
   font-size: 16px;
-  transition: border-color 0.3s ease;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  color: #2d3748;
+  line-height: 1.5;
+}
+
+/* Modern Custom dropdown arrow with circle background */
+.form-group select {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"),
+    linear-gradient(135deg, #f8f9ff 0%, #eef0ff 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right 16px center, right 8px center;
+  background-size: 18px, 36px 36px;
+  padding-right: 55px;
+}
+
+/* Hover effect - lift and glow */
+.form-group select:hover {
+  border-color: #667eea;
+  background-color: #fafbff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+}
+
+/* Input styles */
+.form-group input {
+  padding: 16px 20px;
+  cursor: text;
+  font-weight: 400;
+}
+
+.form-group input:hover {
+  border-color: #c5cad4;
+  background-color: #fafbfc;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .form-group input:disabled,
 .form-group select:disabled {
-  background-color: #e9ecef;
+  background: linear-gradient(135deg, #f5f6f8 0%, #e9ecef 100%);
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.65;
+  border-color: #dee2e6;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-group select:disabled {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"),
+    linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right 16px center, right 8px center;
+  background-size: 18px, 36px 36px;
 }
 
 .form-group input.readonly-input {
@@ -409,6 +488,7 @@ code {
 .form-group input[aria-invalid="true"],
 .form-group select[aria-invalid="true"] {
   border-color: #dc3545;
+  background-color: #fff5f5;
   animation: shake 0.5s ease-in-out;
 }
 
@@ -416,8 +496,63 @@ code {
 .form-group select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  animation: scaleIn 0.3s ease-out;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.12), 0 8px 24px rgba(102, 126, 234, 0.2);
+  transform: translateY(-3px);
+}
+
+.form-group select:focus {
+  background-repeat: no-repeat, no-repeat;
+  background-position: right 16px center, right 8px center;
+  background-size: 18px, 36px 36px;
+}
+
+/* Option elements styling - Clean white cards */
+.form-group select option {
+  padding: 14px 20px;
+  background: #ffffff;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  border-bottom: 1px solid #f0f1f5;
+  margin: 2px 0;
+}
+
+.form-group select option:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.form-group select option:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-bottom: none;
+}
+
+.form-group select option:hover {
+  background: linear-gradient(135deg, #f8f9ff 0%, #eef0ff 100%);
+  color: #667eea;
+  font-weight: 600;
+}
+
+.form-group select option:checked,
+.form-group select option:focus {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.form-group select option:disabled {
+  color: #adb5bd;
+  background: #f8f9fa;
+  font-weight: 400;
+  cursor: not-allowed;
+}
+
+/* Add subtle animation when opening dropdown */
+.form-group select:active {
+  transform: scale(0.98);
 }
 
 .btn {
