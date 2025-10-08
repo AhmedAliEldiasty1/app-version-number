@@ -102,6 +102,8 @@ function App() {
   const [versions, setVersions] = useState<VersionData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [isSwitchingLanguage, setIsSwitchingLanguage] =
+    useState<boolean>(false);
 
   const currentConfig = selectedSchool ? APP_CONFIGS[selectedSchool] : null;
 
@@ -266,8 +268,14 @@ function App() {
         <h1>{t.appTitle}</h1>
         <p>{t.appSubtitle}</p>
         <button
-          className="language-toggle"
-          onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
+          className={`language-toggle ${
+            isSwitchingLanguage ? "switching" : ""
+          }`}
+          onClick={() => {
+            setIsSwitchingLanguage(true);
+            setLanguage(language === "ar" ? "en" : "ar");
+            setTimeout(() => setIsSwitchingLanguage(false), 600);
+          }}
           aria-label={language === "ar" ? t.switchToEnglish : t.switchToArabic}
           title={language === "ar" ? t.switchToEnglish : t.switchToArabic}
         >
