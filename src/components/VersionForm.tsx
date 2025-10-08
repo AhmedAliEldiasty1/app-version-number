@@ -1,37 +1,90 @@
 import React, { useState, useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
+
+/**
+ * Form data interface
+ */
+interface FormData {
+  version: string;
+  type: string;
+  is_active: string;
+}
+
+/**
+ * Platform option interface
+ */
+interface PlatformOption {
+  value: string;
+  label: string;
+  icon: string;
+}
+
+/**
+ * Status option interface
+ */
+interface StatusOption {
+  value: string;
+  label: string;
+  icon: string;
+}
+
+/**
+ * Submit data interface
+ */
+interface SubmitData {
+  version: string;
+  type: string;
+  is_active: boolean;
+}
+
+/**
+ * Error response interface
+ */
+interface ErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+      error?: string;
+    };
+  };
+  message?: string;
+}
+
+/**
+ * VersionForm Component Props
+ */
+interface VersionFormProps {
+  selectedSchool?: string;
+  selectedAppType?: string;
+  onSubmit: (data: Partial<SubmitData>) => Promise<void>;
+}
 
 /**
  * VersionForm Component
  * Form for adding or updating mobile app versions
  *
  * @component
- * @param {Object} props - Component props
- * @param {string} props.selectedSchool - Currently selected school identifier
- * @param {string} props.selectedAppType - Currently selected app type
- * @param {Function} props.onSubmit - Callback function to handle form submission
  */
-const VersionForm = ({
+const VersionForm: React.FC<VersionFormProps> = ({
   selectedSchool = "",
   selectedAppType = "",
   onSubmit,
 }) => {
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     version: "",
     type: "",
     is_active: "",
   });
 
   // UI state
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
 
   /**
    * Platform options configuration
    */
-  const platformOptions = useMemo(
+  const platformOptions = useMemo<PlatformOption[]>(
     () => [
       { value: "ios", label: "iOS", icon: "" },
       { value: "android", label: "Android", icon: "🤖" },
@@ -42,7 +95,7 @@ const VersionForm = ({
   /**
    * Status options configuration
    */
-  const statusOptions = useMemo(
+  const statusOptions = useMemo<StatusOption[]>(
     () => [
       { value: "true", label: "Active", icon: "✅" },
       { value: "false", label: "Inactive", icon: "❌" },
@@ -53,7 +106,7 @@ const VersionForm = ({
   /**
    * Check if form can be submitted
    */
-  const canSubmit = useMemo(
+  const canSubmit = useMemo<boolean>(
     () =>
       Boolean(
         selectedSchool &&
@@ -69,7 +122,7 @@ const VersionForm = ({
   /**
    * Check if configuration is complete
    */
-  const isConfigComplete = useMemo(
+  const isConfigComplete = useMemo<boolean>(
     () => Boolean(selectedSchool && selectedAppType),
     [selectedSchool, selectedAppType]
   );
@@ -77,21 +130,24 @@ const VersionForm = ({
   /**
    * Handles input field changes
    */
-  const handleInputChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear messages on input change
-    setError("");
-    setSuccess("");
-  }, []);
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      // Clear messages on input change
+      setError("");
+      setSuccess("");
+    },
+    []
+  );
 
   /**
    * Validates version format (semantic versioning)
    */
-  const validateVersion = useCallback((version) => {
+  const validateVersion = useCallback((version: string): boolean => {
     const semverRegex = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$/;
     return semverRegex.test(version);
   }, []);
@@ -100,7 +156,7 @@ const VersionForm = ({
    * Handles form submission
    */
   const handleSubmit = useCallback(
-    async (e) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       // Validation
@@ -119,7 +175,7 @@ const VersionForm = ({
       setSuccess("");
 
       try {
-        const submitData = {
+        const submitData: SubmitData = {
           version: formData.version.trim(),
           type: formData.type,
           is_active: formData.is_active === "true",
@@ -137,10 +193,11 @@ const VersionForm = ({
       } catch (err) {
         console.error("Error submitting version:", err);
 
+        const typedError = err as ErrorResponse;
         const errorMessage =
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          err.message ||
+          typedError.response?.data?.message ||
+          typedError.response?.data?.error ||
+          typedError.message ||
           "An unexpected error occurred";
 
         setError(`Failed to save version: ${errorMessage}`);
@@ -280,19 +337,12 @@ const VersionForm = ({
             disabled={loading}
             aria-label="Reset form"
           >
-            � Reset Form
+            🔄 Reset Form
           </button>
         </div>
       </form>
     </div>
   );
-};
-
-// PropTypes for type checking
-VersionForm.propTypes = {
-  selectedSchool: PropTypes.string,
-  selectedAppType: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default React.memo(VersionForm);

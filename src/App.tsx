@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import AppSelector from "./components/AppSelector";
 import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
@@ -12,8 +12,61 @@ axios.defaults.headers.put = {};
 axios.defaults.headers.patch = {};
 delete axios.defaults.headers.common["Accept"];
 
+/**
+ * School configuration interface
+ */
+interface SchoolConfig {
+  name: string;
+  baseUrl: string;
+}
+
+/**
+ * App configurations type
+ */
+interface AppConfigs {
+  [key: string]: SchoolConfig;
+}
+
+/**
+ * Version data interface
+ */
+interface VersionData {
+  id?: string | number;
+  version: string;
+  type: string;
+  is_active: boolean;
+  app_name?: string;
+  created_at?: string;
+  updated_at?: string;
+  attributes?: VersionData;
+}
+
+/**
+ * Submit version data interface
+ */
+interface SubmitVersionData {
+  version: string;
+  type: string;
+  is_active: boolean;
+}
+
+/**
+ * API Response interface
+ */
+interface ApiResponse {
+  data: VersionData[];
+}
+
+/**
+ * API Error response interface
+ */
+interface ApiErrorResponse {
+  message?: string;
+  error?: string;
+}
+
 // App configurations with different base URLs
-const APP_CONFIGS = {
+const APP_CONFIGS: AppConfigs = {
   "ibn-khaldun": {
     name: "ابن خلدون",
     baseUrl: "https://api.system.ouredu.net/api/v1/ar",
@@ -41,17 +94,17 @@ const APP_CONFIGS = {
 };
 
 function App() {
-  const [selectedSchool, setSelectedSchool] = useState("");
-  const [selectedAppType, setSelectedAppType] = useState("");
-  const [activeTab, setActiveTab] = useState("list");
-  const [versions, setVersions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [selectedSchool, setSelectedSchool] = useState<string>("");
+  const [selectedAppType, setSelectedAppType] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("list");
+  const [versions, setVersions] = useState<VersionData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const currentConfig = selectedSchool ? APP_CONFIGS[selectedSchool] : null;
 
   // Function to fetch versions
-  const fetchVersions = async (platform = "ios") => {
+  const fetchVersions = async (platform: string = "ios"): Promise<void> => {
     if (!selectedSchool || !selectedAppType) {
       setError("Please select both school and app type first");
       return;
@@ -61,11 +114,13 @@ function App() {
     setError("");
 
     try {
-      const url = `${currentConfig.baseUrl}/mobile-versions/${platform}/${selectedAppType}`;
+      const url = `${
+        currentConfig!.baseUrl
+      }/mobile-versions/${platform}/${selectedAppType}`;
 
       // GET request with both Accept and Content-Type headers
       const cfgPlain = {
-        responseType: "json",
+        responseType: "json" as const,
         headers: {
           Accept: "application/vnd.api+json",
           "Content-Type": "application/vnd.api+json",
@@ -76,7 +131,10 @@ function App() {
       console.debug("fetchVersions: Attempting GET to:", url);
 
       try {
-        const responsePlain = await axios.get(url, cfgPlain);
+        const responsePlain: AxiosResponse<ApiResponse> = await axios.get(
+          url,
+          cfgPlain
+        );
         console.debug("fetchVersions: plain GET success", {
           status: responsePlain.status,
           headers: responsePlain.headers,
@@ -85,14 +143,15 @@ function App() {
         setLoading(false);
         return;
       } catch (plainErr) {
+        const typedError = plainErr as AxiosError;
         console.warn(
           "fetchVersions: plain GET failed",
           cfgPlain,
-          plainErr?.response?.status,
-          plainErr?.message
+          typedError?.response?.status,
+          typedError?.message
         );
         // If server returned 415 (unsupported media) try with Accept header
-        if (plainErr?.response?.status === 415) {
+        if (typedError?.response?.status === 415) {
           console.debug(
             "fetchVersions: retrying with Accept header due to 415"
           );
@@ -100,10 +159,11 @@ function App() {
             headers: {
               Accept: "application/vnd.api+json, application/json;q=0.9",
             },
-            responseType: "json",
+            responseType: "json" as const,
           };
           try {
-            const responseWithAccept = await axios.get(url, cfg);
+            const responseWithAccept: AxiosResponse<ApiResponse> =
+              await axios.get(url, cfg);
             console.debug("fetchVersions: GET with Accept success", {
               status: responseWithAccept.status,
               headers: responseWithAccept.headers,
@@ -112,12 +172,13 @@ function App() {
             setLoading(false);
             return;
           } catch (acceptErr) {
+            const typedAcceptErr = acceptErr as AxiosError;
             console.error(
               "fetchVersions: GET with Accept also failed",
-              acceptErr?.response?.status,
-              acceptErr?.message
+              typedAcceptErr?.response?.status,
+              typedAcceptErr?.message
             );
-            setError(formatFetchError(acceptErr));
+            setError(formatFetchError(typedAcceptErr));
             setVersions([]);
             setLoading(false);
             return;
@@ -125,14 +186,14 @@ function App() {
         }
 
         // If it wasn't 415, surface the original error
-        setError(formatFetchError(plainErr));
+        setError(formatFetchError(typedError));
         setVersions([]);
         setLoading(false);
         return;
       }
     } catch (err) {
       console.error("Unexpected error fetching versions:", err);
-      setError(formatFetchError(err));
+      setError(formatFetchError(err as AxiosError));
       setVersions([]);
     } finally {
       // loading is handled in the above flows; ensure it's false as fallback
@@ -141,7 +202,7 @@ function App() {
   };
 
   // Helper to format fetch errors for UI
-  const formatFetchError = (err) => {
+  const formatFetchError = (err: AxiosError<any>): string => {
     const status = err?.response?.status;
     const data = err?.response?.data;
     const message = err?.message || "Unknown error";
@@ -151,12 +212,22 @@ function App() {
   };
 
   // Function to submit new version
-  const submitVersion = async (versionData) => {
+  const submitVersion = async (
+    versionData: Partial<VersionData>
+  ): Promise<void> => {
     if (!selectedSchool || !selectedAppType) {
       throw new Error("Please select both school and app type first");
     }
 
-    const url = `${currentConfig.baseUrl}/add-update-mobile-version`;
+    if (
+      !versionData.version ||
+      !versionData.type ||
+      versionData.is_active === undefined
+    ) {
+      throw new Error("Missing required version data");
+    }
+
+    const url = `${currentConfig!.baseUrl}/add-update-mobile-version`;
     const payload = {
       data: {
         type: "user",

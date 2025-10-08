@@ -1,19 +1,47 @@
 import React, { useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
+
+/**
+ * App type configuration
+ */
+interface AppType {
+  value: string;
+  name: string;
+  icon: string;
+}
+
+/**
+ * School configuration
+ */
+interface SchoolConfig {
+  name: string;
+  baseUrl: string;
+}
+
+/**
+ * App configurations object type
+ */
+interface AppConfigs {
+  [key: string]: SchoolConfig;
+}
+
+/**
+ * AppSelector Component Props
+ */
+interface AppSelectorProps {
+  selectedSchool?: string;
+  selectedAppType?: string;
+  onSchoolChange: (school: string) => void;
+  onAppTypeChange: (appType: string) => void;
+  appConfigs: AppConfigs;
+}
 
 /**
  * AppSelector Component
  * Provides selection interface for school and app type configuration
  *
  * @component
- * @param {Object} props - Component props
- * @param {string} props.selectedSchool - Currently selected school identifier
- * @param {string} props.selectedAppType - Currently selected app type
- * @param {Function} props.onSchoolChange - Callback when school selection changes
- * @param {Function} props.onAppTypeChange - Callback when app type selection changes
- * @param {Object} props.appConfigs - Configuration object for available schools
  */
-const AppSelector = ({
+const AppSelector: React.FC<AppSelectorProps> = ({
   selectedSchool = "",
   selectedAppType = "",
   onSchoolChange,
@@ -21,7 +49,7 @@ const AppSelector = ({
   appConfigs = {},
 }) => {
   // App types configuration
-  const appTypes = useMemo(
+  const appTypes = useMemo<AppType[]>(
     () => [
       { value: "employee", name: "Employee App", icon: "👨‍💼" },
       { value: "OurEducation", name: "Parent App", icon: "👨‍👩‍👧" },
@@ -33,7 +61,7 @@ const AppSelector = ({
    * Handles school selection change
    */
   const handleSchoolChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
       const value = e.target.value;
       if (onSchoolChange) {
         onSchoolChange(value);
@@ -46,7 +74,7 @@ const AppSelector = ({
    * Handles app type selection change
    */
   const handleAppTypeChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
       const value = e.target.value;
       if (onAppTypeChange) {
         onAppTypeChange(value);
@@ -58,7 +86,7 @@ const AppSelector = ({
   /**
    * Get current school configuration
    */
-  const currentSchoolConfig = useMemo(
+  const currentSchoolConfig = useMemo<SchoolConfig | null>(
     () => (selectedSchool ? appConfigs[selectedSchool] : null),
     [selectedSchool, appConfigs]
   );
@@ -66,7 +94,7 @@ const AppSelector = ({
   /**
    * Get sorted school entries for consistent display
    */
-  const sortedSchoolEntries = useMemo(
+  const sortedSchoolEntries = useMemo<[string, SchoolConfig][]>(
     () =>
       Object.entries(appConfigs).sort(([, a], [, b]) =>
         a.name.localeCompare(b.name)
@@ -136,20 +164,6 @@ const AppSelector = ({
       )}
     </div>
   );
-};
-
-// PropTypes for type checking
-AppSelector.propTypes = {
-  selectedSchool: PropTypes.string,
-  selectedAppType: PropTypes.string,
-  onSchoolChange: PropTypes.func.isRequired,
-  onAppTypeChange: PropTypes.func.isRequired,
-  appConfigs: PropTypes.objectOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      baseUrl: PropTypes.string.isRequired,
-    })
-  ).isRequired,
 };
 
 export default React.memo(AppSelector);

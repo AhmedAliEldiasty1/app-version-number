@@ -1,21 +1,39 @@
 import React, { useState, useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
+
+/**
+ * Version data interface
+ */
+interface VersionData {
+  id?: string | number;
+  version: string;
+  type: string;
+  is_active: boolean;
+  app_name?: string;
+  created_at?: string;
+  updated_at?: string;
+  attributes?: VersionData;
+}
+
+/**
+ * VersionList Component Props
+ */
+interface VersionListProps {
+  selectedSchool?: string;
+  selectedAppType?: string;
+  versions?: VersionData[];
+  loading?: boolean;
+  error?: string | null;
+  onFetchVersions: (platform: string) => void;
+  onToggleStatus: (versionData: Partial<VersionData>) => Promise<void>;
+}
 
 /**
  * VersionList Component
  * Displays a list of mobile app versions with filtering and toggle functionality
  *
  * @component
- * @param {Object} props - Component props
- * @param {string} props.selectedSchool - Currently selected school identifier
- * @param {string} props.selectedAppType - Currently selected app type
- * @param {Array} props.versions - Array of version objects
- * @param {boolean} props.loading - Loading state indicator
- * @param {string} props.error - Error message if any
- * @param {Function} props.onFetchVersions - Callback to fetch versions
- * @param {Function} props.onToggleStatus - Callback to toggle version status
  */
-const VersionList = ({
+const VersionList: React.FC<VersionListProps> = ({
   selectedSchool,
   selectedAppType,
   versions = [],
@@ -24,8 +42,8 @@ const VersionList = ({
   onFetchVersions,
   onToggleStatus,
 }) => {
-  const [platform, setPlatform] = useState("ios");
-  const [togglingVersion, setTogglingVersion] = useState(null);
+  const [platform, setPlatform] = useState<string>("ios");
+  const [togglingVersion, setTogglingVersion] = useState<string | null>(null);
 
   /**
    * Handles refresh button click
@@ -39,16 +57,19 @@ const VersionList = ({
   /**
    * Handles platform selection change
    */
-  const handlePlatformChange = useCallback((e) => {
-    setPlatform(e.target.value);
-  }, []);
+  const handlePlatformChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setPlatform(e.target.value);
+    },
+    []
+  );
 
   /**
    * Toggles the active status of a version
-   * @param {Object} versionData - The version data to toggle
+   * @param versionData - The version data to toggle
    */
   const handleToggleStatus = useCallback(
-    async (versionData) => {
+    async (versionData: VersionData) => {
       if (!onToggleStatus || togglingVersion) return;
 
       const versionKey = `${versionData.version}-${versionData.type}`;
@@ -75,10 +96,10 @@ const VersionList = ({
 
   /**
    * Formats version data from different API response formats
-   * @param {Object} version - Raw version data
-   * @returns {Object} Formatted version data
+   * @param version - Raw version data
+   * @returns Formatted version data
    */
-  const formatVersionData = useCallback((version) => {
+  const formatVersionData = useCallback((version: VersionData): VersionData => {
     return version?.attributes || version;
   }, []);
 
@@ -110,7 +131,7 @@ const VersionList = ({
    * Renders a single version card
    */
   const renderVersionCard = useCallback(
-    (version, index) => {
+    (version: VersionData, index: number) => {
       const versionData = formatVersionData(version);
       const versionKey = `${versionData.version}-${versionData.type}`;
       const isToggling = togglingVersion === versionKey;
@@ -137,7 +158,7 @@ const VersionList = ({
               }
               role="button"
               tabIndex={0}
-              onKeyPress={(e) => {
+              onKeyPress={(e: React.KeyboardEvent) => {
                 if (e.key === "Enter" || e.key === " ") {
                   !isToggling && handleToggleStatus(versionData);
                 }
@@ -249,28 +270,6 @@ const VersionList = ({
       )}
     </div>
   );
-};
-
-// PropTypes for type checking
-VersionList.propTypes = {
-  selectedSchool: PropTypes.string,
-  selectedAppType: PropTypes.string,
-  versions: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      version: PropTypes.string,
-      type: PropTypes.string,
-      is_active: PropTypes.bool,
-      app_name: PropTypes.string,
-      created_at: PropTypes.string,
-      updated_at: PropTypes.string,
-      attributes: PropTypes.object,
-    })
-  ),
-  loading: PropTypes.bool,
-  error: PropTypes.string,
-  onFetchVersions: PropTypes.func.isRequired,
-  onToggleStatus: PropTypes.func.isRequired,
 };
 
 export default React.memo(VersionList);
