@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Version Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>📱 App Version Manager</h1>
+        <p>Manage mobile app versions for different applications</p>
+      </header>
+
+      <div class="form-section">
+        <h2>🔧 Configuration</h2>
+        <div class="form-group">
+          <label for="appSelect">Select Application:</label>
+          <select id="appSelect" onchange="updateConfiguration()">
+            <option value="">Choose an app...</option>
+            <option value="employee">Employee App</option>
+            <option value="student">Student App</option>
+            <option value="teacher">Teacher App</option>
+            <option value="OurEducation">Parent App</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="baseUrl">Base URL:</label>
+          <input
+            type="text"
+            id="baseUrl"
+            placeholder="Enter base URL"
+            readonly
+          />
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-button active" onclick="showTab('list')">
+          📋 List Versions
+        </button>
+        <button class="tab-button" onclick="showTab('add')">
+          ➕ Add/Update Version
+        </button>
+      </div>
+
+      <!-- List Versions Tab -->
+      <div id="listTab" class="tab-content active">
+        <h2>📱 App Versions</h2>
+
+        <div class="form-group">
+          <label for="platformSelect">Platform:</label>
+          <select id="platformSelect">
+            <option value="ios">iOS</option>
+            <option value="android">Android</option>
+          </select>
+          <button onclick="fetchVersions()" class="btn btn-secondary">
+            🔄 Refresh Data
+          </button>
+        </div>
+
+        <div id="loadingList" class="loading hidden">Loading...</div>
+        <div id="errorList" class="error hidden"></div>
+
+        <div id="versionsContainer">
+          <div class="no-data">
+            Select an app and click "Refresh Data" to view versions
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Update Version Tab -->
+      <div id="addTab" class="tab-content">
+        <h2>➕ Add/Update Version</h2>
+
+        <form id="versionForm">
+          <div class="form-group">
+            <label for="versionInput">Version:</label>
+            <input
+              type="text"
+              id="versionInput"
+              placeholder="e.g., 1.0.0"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="typeSelect">Platform Type:</label>
+            <select id="typeSelect" required>
+              <option value="">Select platform...</option>
+              <option value="ios">iOS</option>
+              <option value="android">Android</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="isActiveSelect">Status:</label>
+            <select id="isActiveSelect" required>
+              <option value="">Select status...</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+
+          <div id="loadingForm" class="loading hidden">Submitting...</div>
+          <div id="errorForm" class="error hidden"></div>
+          <div id="successForm" class="success hidden"></div>
+
+          <button type="submit" class="btn btn-primary">💾 Save Version</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
