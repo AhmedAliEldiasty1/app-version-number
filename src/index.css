@@ -64,6 +64,19 @@ code {
   color: #333;
 }
 
+.form-group .required {
+  color: #dc3545;
+  margin-left: 2px;
+}
+
+.form-group .help-text {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
 .form-group input,
 .form-group select {
   width: 100%;
@@ -72,6 +85,25 @@ code {
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s ease;
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-group input.readonly-input {
+  background-color: #f8f9fa;
+  cursor: default;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.form-group input[aria-invalid="true"],
+.form-group select[aria-invalid="true"] {
+  border-color: #dc3545;
 }
 
 .form-group input:focus,
@@ -91,6 +123,19 @@ code {
   transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -233,6 +278,33 @@ code {
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-badge:active {
+  transform: scale(0.98);
+}
+
+.status-badge.status-toggling {
+  opacity: 0.6;
+  cursor: wait;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .status-active {
