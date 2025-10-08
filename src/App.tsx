@@ -8,14 +8,6 @@ import { secureApi } from "./utils/apiService";
 import { APP_CONFIGS } from "./utils/config";
 
 /**
- * School configuration interface
- */
-interface SchoolConfig {
-  name: string;
-  baseUrl: string;
-}
-
-/**
  * Version data interface
  */
 interface VersionData {
@@ -73,34 +65,19 @@ function App() {
         },
         data: {},
       };
-      console.debug("fetchVersions: Config being sent to axios:", cfgPlain);
-      console.debug("fetchVersions: Attempting GET to:", url);
 
       try {
         const responsePlain: AxiosResponse<ApiResponse> = await secureApi.get(
           url,
           cfgPlain
         );
-        console.debug("fetchVersions: plain GET success", {
-          status: responsePlain.status,
-          headers: responsePlain.headers,
-        });
         setVersions(responsePlain.data.data || []);
         setLoading(false);
         return;
       } catch (plainErr) {
         const typedError = plainErr as AxiosError;
-        console.warn(
-          "fetchVersions: plain GET failed",
-          cfgPlain,
-          typedError?.response?.status,
-          typedError?.message
-        );
         // If server returned 415 (unsupported media) try with Accept header
         if (typedError?.response?.status === 415) {
-          console.debug(
-            "fetchVersions: retrying with Accept header due to 415"
-          );
           const cfg = {
             headers: {
               Accept: "application/vnd.api+json, application/json;q=0.9",
@@ -110,20 +87,11 @@ function App() {
           try {
             const responseWithAccept: AxiosResponse<ApiResponse> =
               await secureApi.get(url, cfg);
-            console.debug("fetchVersions: GET with Accept success", {
-              status: responseWithAccept.status,
-              headers: responseWithAccept.headers,
-            });
             setVersions(responseWithAccept.data.data || []);
             setLoading(false);
             return;
           } catch (acceptErr) {
             const typedAcceptErr = acceptErr as AxiosError;
-            console.error(
-              "fetchVersions: GET with Accept also failed",
-              typedAcceptErr?.response?.status,
-              typedAcceptErr?.message
-            );
             setError(formatFetchError(typedAcceptErr));
             setVersions([]);
             setLoading(false);
