@@ -3,6 +3,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import AppSelector from "./components/AppSelector";
 import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
+import SchoolManager from "./components/SchoolManager";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
 import { APP_CONFIGS } from "./utils/config";
@@ -38,8 +39,37 @@ function App() {
   const [error, setError] = useState<string>("");
   const [isSwitchingLanguage, setIsSwitchingLanguage] =
     useState<boolean>(false);
+  const [customSchools, setCustomSchools] = useState<
+    Record<string, { name: string; baseUrl: string }>
+  >({});
 
-  const currentConfig = selectedSchool ? APP_CONFIGS[selectedSchool] : null;
+  const currentConfig = selectedSchool
+    ? customSchools[selectedSchool] || APP_CONFIGS[selectedSchool]
+    : null;
+
+  // Load custom schools from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("customSchools");
+    if (saved) {
+      try {
+        setCustomSchools(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse custom schools:", e);
+      }
+    }
+  }, []);
+
+  // Handle adding new school
+  const handleAddSchool = (
+    key: string,
+    config: { name: string; baseUrl: string }
+  ) => {
+    const updated = { ...customSchools, [key]: config };
+    setCustomSchools(updated);
+    localStorage.setItem("customSchools", JSON.stringify(updated));
+    // Auto-select the new school
+    setSelectedSchool(key);
+  };
 
   // Function to fetch versions
   const fetchVersions = async (platform: string = "ios"): Promise<void> => {
@@ -193,12 +223,14 @@ function App() {
         </button>
       </header>
 
+      <SchoolManager onAddSchool={handleAddSchool} />
+
       <AppSelector
         selectedSchool={selectedSchool}
         selectedAppType={selectedAppType}
         onSchoolChange={setSelectedSchool}
         onAppTypeChange={setSelectedAppType}
-        appConfigs={APP_CONFIGS}
+        appConfigs={{ ...APP_CONFIGS, ...customSchools }}
       />
 
       <div className="tabs">

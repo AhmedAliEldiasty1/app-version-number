@@ -907,3 +907,256 @@ code {
     margin-top: 10px;
   }
 }
+
+/* School Manager Styles */
+.school-manager {
+  margin-bottom: 30px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.btn-add-school {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  animation: scaleIn 0.4s ease-out;
+}
+
+.btn-add-school:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.btn-add-school:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-add-school .icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-add-school:hover .icon {
+  transform: rotate(90deg);
+}
+
+.school-form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  overflow: hidden;
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 700px;
+}
+
+.school-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.school-form-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.btn-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.btn-close:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+.school-form {
+  padding: 28px;
+}
+
+.school-form .form-group {
+  margin-bottom: 24px;
+}
+
+.school-form .form-group:last-of-type {
+  margin-bottom: 28px;
+}
+
+.school-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+}
+
+.school-form .required {
+  color: #e74c3c;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.school-form .form-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.school-form .form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.school-form .form-input::placeholder {
+  color: #999;
+  opacity: 0.7;
+}
+
+.school-form .help-text {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.alert {
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.alert-error {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+  color: #c0392b;
+  border: 2px solid #e74c3c;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #f0fff4 0%, #d4f4dd 100%);
+  color: #27ae60;
+  border: 2px solid #2ecc71;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 2px solid #f5f5f5;
+  margin-top: 24px;
+}
+
+.btn-secondary-outline {
+  padding: 12px 24px;
+  background: white;
+  color: #666;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary-outline:hover {
+  background: #f8f9fa;
+  border-color: #999;
+  color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn-secondary-outline:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* RTL Support for School Manager */
+[dir="rtl"] .school-form-header {
+  direction: rtl;
+}
+
+[dir="rtl"] .btn-add-school {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .school-form .required {
+  margin-left: 0;
+  margin-right: 2px;
+}
+
+[dir="rtl"] .alert {
+  animation: slideInRight 0.4s ease-out;
+}

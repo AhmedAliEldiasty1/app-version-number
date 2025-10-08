@@ -80,6 +80,27 @@ export interface Translations {
   language: string;
   switchToEnglish: string;
   switchToArabic: string;
+
+  // School Manager
+  addNewSchool: string;
+  addSchoolTitle: string;
+  schoolKey: string;
+  schoolKeyPlaceholder: string;
+  schoolKeyHelp: string;
+  schoolName: string;
+  schoolNamePlaceholder: string;
+  schoolNameHelp: string;
+  apiBaseUrlLabel: string;
+  apiBaseUrlPlaceholder: string;
+  apiBaseUrlHelpText: string;
+  schoolKeyRequired: string;
+  schoolNameRequired: string;
+  apiUrlRequired: string;
+  invalidUrlFormat: string;
+  schoolAddedSuccess: string;
+  cancel: string;
+  save: string;
+  close: string;
 }
 
 export const translations: Record<"ar" | "en", Translations> = {

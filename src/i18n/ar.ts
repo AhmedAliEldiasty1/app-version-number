@@ -80,4 +80,25 @@ export const ar = {
   language: "اللغة",
   switchToEnglish: "English",
   switchToArabic: "العربية",
+
+  // School Manager
+  addNewSchool: "إضافة مدرسة جديدة",
+  addSchoolTitle: "🏫 إضافة مدرسة جديدة",
+  schoolKey: "معرّف المدرسة",
+  schoolKeyPlaceholder: "مثال: my-school",
+  schoolKeyHelp: "حروف صغيرة وأرقام وشرطات فقط",
+  schoolName: "اسم المدرسة",
+  schoolNamePlaceholder: "مثال: اسم المدرسة",
+  schoolNameHelp: "الاسم المعروض للمدرسة",
+  apiBaseUrlLabel: "رابط API الأساسي",
+  apiBaseUrlPlaceholder: "https://api.example.com/api/v1/ar",
+  apiBaseUrlHelpText: "رابط API الكامل (يجب أن يبدأ بـ https://)",
+  schoolKeyRequired: "معرّف المدرسة مطلوب",
+  schoolNameRequired: "اسم المدرسة مطلوب",
+  apiUrlRequired: "رابط API مطلوب",
+  invalidUrlFormat: "صيغة الرابط غير صحيحة",
+  schoolAddedSuccess: "تمت إضافة المدرسة بنجاح!",
+  cancel: "إلغاء",
+  save: "💾 حفظ",
+  close: "✕ إغلاق",
 };
