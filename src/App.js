@@ -225,6 +225,7 @@ function App() {
           loading={loading}
           error={error}
           onFetchVersions={fetchVersions}
+          onToggleStatus={submitVersion}
         />
       )}
 

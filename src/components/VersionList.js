@@ -7,11 +7,27 @@ const VersionList = ({
   loading,
   error,
   onFetchVersions,
+  onToggleStatus,
 }) => {
   const [platform, setPlatform] = useState("ios");
 
   const handleRefresh = () => {
     onFetchVersions(platform);
+  };
+
+  const handleToggleStatus = async (versionData) => {
+    try {
+      // Call the parent component's toggle function with opposite status
+      await onToggleStatus({
+        version: versionData.version,
+        type: versionData.type,
+        is_active: !versionData.is_active,
+      });
+      // Refresh the list after successful toggle
+      handleRefresh();
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+    }
   };
 
   const formatVersionData = (version) => {
@@ -77,12 +93,16 @@ const VersionList = ({
                   <div className="version-number">
                     Version: {versionData.version || "Unknown"}
                   </div>
+
                   <span
                     className={`status-badge ${
                       versionData.is_active
                         ? "status-active"
                         : "status-inactive"
                     }`}
+                    onClick={() => handleToggleStatus(versionData)}
+                    style={{ cursor: "pointer", userSelect: "none" }}
+                    title="Click to toggle status"
                   >
                     {versionData.is_active ? "Active" : "Inactive"}
                   </span>
@@ -94,10 +114,6 @@ const VersionList = ({
                   </div>
                   <div>
                     <strong>Platform:</strong> {versionData.type || platform}
-                  </div>
-                  <div>
-                    <strong>Status:</strong>{" "}
-                    {versionData.is_active ? "Active" : "Inactive"}
                   </div>
                   {versionData.created_at && (
                     <div>
