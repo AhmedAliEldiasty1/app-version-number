@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import AppSelector from "./components/AppSelector";
 import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
 import { useLanguage } from "./i18n/LanguageContext";
-
-// Configure axios to not send unnecessary headers
-axios.defaults.headers.common = {};
-axios.defaults.headers.get = {};
-axios.defaults.headers.post = {};
-axios.defaults.headers.put = {};
-axios.defaults.headers.patch = {};
-delete axios.defaults.headers.common["Accept"];
+import { secureApi } from "./utils/apiService";
+import { APP_CONFIGS } from "./utils/config";
 
 /**
  * School configuration interface
@@ -19,13 +13,6 @@ delete axios.defaults.headers.common["Accept"];
 interface SchoolConfig {
   name: string;
   baseUrl: string;
-}
-
-/**
- * App configurations type
- */
-interface AppConfigs {
-  [key: string]: SchoolConfig;
 }
 
 /**
@@ -43,56 +30,11 @@ interface VersionData {
 }
 
 /**
- * Submit version data interface
- */
-interface SubmitVersionData {
-  version: string;
-  type: string;
-  is_active: boolean;
-}
-
-/**
  * API Response interface
  */
 interface ApiResponse {
   data: VersionData[];
 }
-
-/**
- * API Error response interface
- */
-interface ApiErrorResponse {
-  message?: string;
-  error?: string;
-}
-
-// App configurations with different base URLs
-const APP_CONFIGS: AppConfigs = {
-  "ibn-khaldun": {
-    name: "ابن خلدون",
-    baseUrl: "https://api.system.ouredu.net/api/v1/ar",
-  },
-  "dar-al-ahfad": {
-    name: "دار الاحفاد",
-    baseUrl: "https://api.dar-al-ahfad.ouredu.net/api/v1/ar",
-  },
-  "al-taib": {
-    name: "الكلم الطيب",
-    baseUrl: "https://api.altaib.system.ouredu.net/api/v1/ar",
-  },
-  "high-gate": {
-    name: "High Gate",
-    baseUrl: "https://api.high-gate.system.ouredu.net/api/v1/ar",
-  },
-  testing: {
-    name: "Testing",
-    baseUrl: "https://testing.oetest.tech/api/v1/ar",
-  },
-  staging: {
-    name: "Staging",
-    baseUrl: "https://oetest2.tech/api/v1/ar",
-  },
-};
 
 function App() {
   const { t, language, setLanguage } = useLanguage();
@@ -135,7 +77,7 @@ function App() {
       console.debug("fetchVersions: Attempting GET to:", url);
 
       try {
-        const responsePlain: AxiosResponse<ApiResponse> = await axios.get(
+        const responsePlain: AxiosResponse<ApiResponse> = await secureApi.get(
           url,
           cfgPlain
         );
@@ -167,7 +109,7 @@ function App() {
           };
           try {
             const responseWithAccept: AxiosResponse<ApiResponse> =
-              await axios.get(url, cfg);
+              await secureApi.get(url, cfg);
             console.debug("fetchVersions: GET with Accept success", {
               status: responseWithAccept.status,
               headers: responseWithAccept.headers,
@@ -245,7 +187,7 @@ function App() {
       },
     };
 
-    const response = await axios.post(url, payload, {
+    const response = await secureApi.post(url, payload, {
       headers: {
         Accept: "application/vnd.api+json, application/json;q=0.9",
         "content-Type": "application/vnd.api+json, application/json;q=0.9",
