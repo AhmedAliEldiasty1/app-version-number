@@ -101,6 +101,20 @@ export interface Translations {
   cancel: string;
   save: string;
   close: string;
+
+  // School List & Delete
+  viewCustomSchools: string;
+  viewAllSchools: string;
+  customSchoolsTitle: string;
+  allSchoolsTitle: string;
+  deleteSchool: string;
+  confirmDeleteSchool: string;
+  deleteConfirm: string;
+  schoolDeletedSuccess: string;
+  noCustomSchools: string;
+  noSchools: string;
+  builtIn: string;
+  cannotDeleteBuiltIn: string;
 }
 
 export const translations: Record<"ar" | "en", Translations> = {

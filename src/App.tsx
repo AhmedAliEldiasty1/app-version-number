@@ -4,6 +4,7 @@ import AppSelector from "./components/AppSelector";
 import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
 import SchoolManager from "./components/SchoolManager";
+import SchoolList from "./components/SchoolList";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
 import { APP_CONFIGS } from "./utils/config";
@@ -69,6 +70,20 @@ function App() {
     localStorage.setItem("customSchools", JSON.stringify(updated));
     // Auto-select the new school
     setSelectedSchool(key);
+  };
+
+  // Handle deleting a school
+  const handleDeleteSchool = (key: string) => {
+    const updated = { ...customSchools };
+    delete updated[key];
+    setCustomSchools(updated);
+    localStorage.setItem("customSchools", JSON.stringify(updated));
+
+    // If the deleted school was selected, clear selection
+    if (selectedSchool === key) {
+      setSelectedSchool("");
+      setVersions([]);
+    }
   };
 
   // Function to fetch versions
@@ -223,7 +238,21 @@ function App() {
         </button>
       </header>
 
-      <SchoolManager onAddSchool={handleAddSchool} />
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <SchoolManager onAddSchool={handleAddSchool} />
+        <SchoolList
+          allSchools={{ ...APP_CONFIGS, ...customSchools }}
+          customSchools={customSchools}
+          onDeleteSchool={handleDeleteSchool}
+        />
+      </div>
 
       <AppSelector
         selectedSchool={selectedSchool}

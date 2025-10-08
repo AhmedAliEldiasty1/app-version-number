@@ -101,4 +101,18 @@ export const ar = {
   cancel: "إلغاء",
   save: "💾 حفظ",
   close: "✕ إغلاق",
+
+  // School List & Delete
+  viewCustomSchools: "عرض المدارس المخصصة",
+  viewAllSchools: "عرض جميع المدارس",
+  customSchoolsTitle: "📋 المدارس المخصصة",
+  allSchoolsTitle: "📋 جميع المدارس",
+  deleteSchool: "حذف المدرسة",
+  confirmDeleteSchool: "⚠️ هل أنت متأكد من حذف هذه المدرسة؟",
+  deleteConfirm: "🗑️ حذف",
+  schoolDeletedSuccess: "تم حذف المدرسة بنجاح!",
+  noCustomSchools: "لا توجد مدارس مخصصة",
+  noSchools: "لا توجد مدارس",
+  builtIn: "مدمج",
+  cannotDeleteBuiltIn: "لا يمكن حذف المدارس المدمجة",
 };

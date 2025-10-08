@@ -101,4 +101,18 @@ export const en = {
   cancel: "Cancel",
   save: "💾 Save",
   close: "✕ Close",
+
+  // School List & Delete
+  viewCustomSchools: "View Custom Schools",
+  viewAllSchools: "View All Schools",
+  customSchoolsTitle: "📋 Custom Schools",
+  allSchoolsTitle: "📋 All Schools",
+  deleteSchool: "Delete School",
+  confirmDeleteSchool: "⚠️ Are you sure you want to delete this school?",
+  deleteConfirm: "🗑️ Delete",
+  schoolDeletedSuccess: "School deleted successfully!",
+  noCustomSchools: "No custom schools added yet",
+  noSchools: "No schools available",
+  builtIn: "Built-in",
+  cannotDeleteBuiltIn: "Cannot delete built-in schools",
 };
