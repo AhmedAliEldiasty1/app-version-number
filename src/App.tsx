@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import AppSelector from "./components/AppSelector";
 import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
+import { useLanguage } from "./i18n/LanguageContext";
 
 // Configure axios to not send unnecessary headers
 axios.defaults.headers.common = {};
@@ -94,6 +95,7 @@ const APP_CONFIGS: AppConfigs = {
 };
 
 function App() {
+  const { t, language, setLanguage } = useLanguage();
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   const [selectedAppType, setSelectedAppType] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>("list");
@@ -261,8 +263,16 @@ function App() {
   return (
     <div className="container">
       <header className="header">
-        <h1>📱 App Version Manager</h1>
-        <p>Manage mobile app versions for different applications</p>
+        <h1>{t.appTitle}</h1>
+        <p>{t.appSubtitle}</p>
+        <button
+          className="language-toggle"
+          onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
+          aria-label={language === "ar" ? t.switchToEnglish : t.switchToArabic}
+          title={language === "ar" ? t.switchToEnglish : t.switchToArabic}
+        >
+          {language === "ar" ? t.switchToEnglish : t.switchToArabic}
+        </button>
       </header>
 
       <AppSelector
@@ -278,13 +288,13 @@ function App() {
           className={`tab-button ${activeTab === "list" ? "active" : ""}`}
           onClick={() => setActiveTab("list")}
         >
-          📋 List Versions
+          {t.listVersionsTab}
         </button>
         <button
           className={`tab-button ${activeTab === "add" ? "active" : ""}`}
           onClick={() => setActiveTab("add")}
         >
-          ➕ Add/Update Version
+          {t.addUpdateVersionTab}
         </button>
       </div>
 

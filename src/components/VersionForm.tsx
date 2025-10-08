@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 /**
  * Form data interface
@@ -69,6 +70,8 @@ const VersionForm: React.FC<VersionFormProps> = ({
   selectedAppType = "",
   onSubmit,
 }) => {
+  const { t } = useLanguage();
+
   // Form state
   const [formData, setFormData] = useState<FormData>({
     version: "",
@@ -86,10 +89,10 @@ const VersionForm: React.FC<VersionFormProps> = ({
    */
   const platformOptions = useMemo<PlatformOption[]>(
     () => [
-      { value: "ios", label: "iOS", icon: "" },
-      { value: "android", label: "Android", icon: "🤖" },
+      { value: "ios", label: t.ios, icon: "" },
+      { value: "android", label: t.android, icon: "🤖" },
     ],
-    []
+    [t]
   );
 
   /**
@@ -97,10 +100,10 @@ const VersionForm: React.FC<VersionFormProps> = ({
    */
   const statusOptions = useMemo<StatusOption[]>(
     () => [
-      { value: "true", label: "Active", icon: "✅" },
-      { value: "false", label: "Inactive", icon: "❌" },
+      { value: "true", label: t.active, icon: "✅" },
+      { value: "false", label: t.inactive, icon: "❌" },
     ],
-    []
+    [t]
   );
 
   /**
@@ -161,12 +164,12 @@ const VersionForm: React.FC<VersionFormProps> = ({
 
       // Validation
       if (!isConfigComplete) {
-        setError("Please select both school and app type first");
+        setError(t.selectBothMessage);
         return;
       }
 
       if (!validateVersion(formData.version)) {
-        setError("Please enter a valid version number (e.g., 1.0.0)");
+        setError(t.invalidVersionFormat);
         return;
       }
 
@@ -184,9 +187,9 @@ const VersionForm: React.FC<VersionFormProps> = ({
         await onSubmit(submitData);
 
         setSuccess(
-          `Version ${submitData.version} ${
-            submitData.is_active ? "activated" : "deactivated"
-          } successfully!`
+          `${t.version} ${submitData.version} ${
+            submitData.is_active ? t.versionActivated : t.versionDeactivated
+          } ${t.versionSavedSuccess}`
         );
 
         // Keep form data for easier updates
@@ -200,12 +203,12 @@ const VersionForm: React.FC<VersionFormProps> = ({
           typedError.message ||
           "An unexpected error occurred";
 
-        setError(`Failed to save version: ${errorMessage}`);
+        setError(`${t.failedToSave}: ${errorMessage}`);
       } finally {
         setLoading(false);
       }
     },
-    [isConfigComplete, formData, onSubmit, validateVersion]
+    [isConfigComplete, formData, onSubmit, validateVersion, t]
   );
 
   /**
@@ -223,19 +226,18 @@ const VersionForm: React.FC<VersionFormProps> = ({
 
   return (
     <div className="tab-content active">
-      <h2>➕ Add/Update Version</h2>
+      <h2>{t.addUpdateVersionTitle}</h2>
 
       {!isConfigComplete && (
         <div className="error" role="alert">
-          <strong>⚠️ Configuration Required:</strong> Please select both school
-          and app type from the configuration section first.
+          <strong>{t.configRequired}:</strong> {t.configRequiredMessage}
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="versionInput">
-            Version Number: <span className="required">*</span>
+            {t.versionNumber}: <span className="required">{t.required}</span>
           </label>
           <input
             type="text"
@@ -243,21 +245,19 @@ const VersionForm: React.FC<VersionFormProps> = ({
             name="version"
             value={formData.version}
             onChange={handleInputChange}
-            placeholder="e.g., 1.0.0"
+            placeholder={t.versionPlaceholder}
             required
             disabled={!isConfigComplete}
             aria-required="true"
             aria-invalid={error.includes("version") ? "true" : "false"}
             pattern="^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$"
           />
-          <small className="help-text">
-            Use semantic versioning format (e.g., 1.0.0, 2.1.3)
-          </small>
+          <small className="help-text">{t.versionHelp}</small>
         </div>
 
         <div className="form-group">
           <label htmlFor="typeSelect">
-            Platform Type: <span className="required">*</span>
+            {t.platformType}: <span className="required">{t.required}</span>
           </label>
           <select
             id="typeSelect"
@@ -268,7 +268,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
             disabled={!isConfigComplete}
             aria-required="true"
           >
-            <option value="">Select platform...</option>
+            <option value="">{t.selectPlatformPlaceholder}</option>
             {platformOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.icon} {option.label}
@@ -279,7 +279,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
 
         <div className="form-group">
           <label htmlFor="isActiveSelect">
-            Status: <span className="required">*</span>
+            {t.status}: <span className="required">{t.required}</span>
           </label>
           <select
             id="isActiveSelect"
@@ -290,21 +290,19 @@ const VersionForm: React.FC<VersionFormProps> = ({
             disabled={!isConfigComplete}
             aria-required="true"
           >
-            <option value="">Select status...</option>
+            <option value="">{t.selectStatusPlaceholder}</option>
             {statusOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.icon} {option.label}
               </option>
             ))}
           </select>
-          <small className="help-text">
-            Active versions will be available for app updates
-          </small>
+          <small className="help-text">{t.statusHelp}</small>
         </div>
 
         {loading && (
           <div className="loading" role="status" aria-live="polite">
-            Submitting version...
+            {t.submittingVersion}
           </div>
         )}
 
@@ -325,9 +323,9 @@ const VersionForm: React.FC<VersionFormProps> = ({
             type="submit"
             className="btn btn-primary"
             disabled={!canSubmit}
-            aria-label="Save version"
+            aria-label={t.saveVersion}
           >
-            💾 Save Version
+            {t.saveVersion}
           </button>
 
           <button
@@ -335,9 +333,9 @@ const VersionForm: React.FC<VersionFormProps> = ({
             className="btn btn-secondary"
             onClick={handleReset}
             disabled={loading}
-            aria-label="Reset form"
+            aria-label={t.resetForm}
           >
-            🔄 Reset Form
+            {t.resetForm}
           </button>
         </div>
       </form>

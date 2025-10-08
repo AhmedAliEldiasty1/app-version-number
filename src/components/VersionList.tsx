@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 /**
  * Version data interface
@@ -42,6 +43,7 @@ const VersionList: React.FC<VersionListProps> = ({
   onFetchVersions,
   onToggleStatus,
 }) => {
+  const { t } = useLanguage();
   const [platform, setPlatform] = useState<string>("ios");
   const [togglingVersion, setTogglingVersion] = useState<string | null>(null);
 
@@ -140,7 +142,7 @@ const VersionList: React.FC<VersionListProps> = ({
         <div key={versionData.id || index} className="version-card">
           <div className="version-header">
             <div className="version-number">
-              Version: {versionData.version || "Unknown"}
+              {t.version}: {versionData.version || "Unknown"}
             </div>
 
             <span
@@ -153,9 +155,7 @@ const VersionList: React.FC<VersionListProps> = ({
                 userSelect: "none",
                 opacity: isToggling ? 0.6 : 1,
               }}
-              title={
-                isToggling ? "Toggling status..." : "Click to toggle status"
-              }
+              title={isToggling ? t.togglingStatus : t.clickToToggle}
               role="button"
               tabIndex={0}
               onKeyPress={(e: React.KeyboardEvent) => {
@@ -165,23 +165,24 @@ const VersionList: React.FC<VersionListProps> = ({
               }}
             >
               {isToggling
-                ? "Updating..."
+                ? t.updating
                 : versionData.is_active
-                ? "Active"
-                : "Inactive"}
+                ? t.active
+                : t.inactive}
             </span>
           </div>
 
           <div className="version-details">
             <div>
-              <strong>App:</strong> {versionData.app_name || selectedAppType}
+              <strong>{t.app}:</strong>{" "}
+              {versionData.app_name || selectedAppType}
             </div>
             <div>
-              <strong>Platform:</strong> {versionData.type || platform}
+              <strong>{t.platform}:</strong> {versionData.type || platform}
             </div>
             {versionData.created_at && (
               <div>
-                <strong>Created:</strong>{" "}
+                <strong>{t.created}:</strong>{" "}
                 {new Date(versionData.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "short",
@@ -191,7 +192,7 @@ const VersionList: React.FC<VersionListProps> = ({
             )}
             {versionData.updated_at && (
               <div>
-                <strong>Updated:</strong>{" "}
+                <strong>{t.updated}:</strong>{" "}
                 {new Date(versionData.updated_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "short",
@@ -209,39 +210,40 @@ const VersionList: React.FC<VersionListProps> = ({
       platform,
       togglingVersion,
       handleToggleStatus,
+      t,
     ]
   );
 
   return (
     <div className="tab-content active">
-      <h2>📱 App Versions</h2>
+      <h2>{t.appVersionsTitle}</h2>
 
       <div className="platform-filter">
         <div className="form-group" style={{ marginBottom: 0, flex: 1 }}>
-          <label htmlFor="platformSelect">Platform:</label>
+          <label htmlFor="platformSelect">{t.platform}:</label>
           <select
             id="platformSelect"
             value={platform}
             onChange={handlePlatformChange}
-            aria-label="Select platform"
+            aria-label={t.platform}
           >
-            <option value="ios">iOS</option>
-            <option value="android">Android</option>
+            <option value="ios">{t.ios}</option>
+            <option value="android">{t.android}</option>
           </select>
         </div>
         <button
           onClick={handleRefresh}
           className="btn btn-secondary"
           disabled={!isSelectionComplete || loading}
-          aria-label="Refresh version data"
+          aria-label={t.refreshData}
         >
-          🔄 Refresh Data
+          {t.refreshData}
         </button>
       </div>
 
       {loading && (
         <div className="loading" role="status" aria-live="polite">
-          Loading versions...
+          {t.loadingVersions}
         </div>
       )}
 
@@ -253,13 +255,13 @@ const VersionList: React.FC<VersionListProps> = ({
 
       {!isSelectionComplete && !loading && (
         <div className="no-data" role="status">
-          Select both school and app type from the configuration section above
+          {t.selectConfigMessage}
         </div>
       )}
 
       {shouldShowEmptyState && (
         <div className="no-data" role="status">
-          No versions found. Click "Refresh Data" to load versions.
+          {t.noVersionsFound}
         </div>
       )}
 

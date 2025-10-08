@@ -12,6 +12,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
   line-height: 1.6;
+  transition: direction 0.3s ease;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .form-actions {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .btn-secondary {
+  margin-left: 0;
+  margin-right: 10px;
 }
 
 code {
@@ -33,6 +48,7 @@ code {
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .header h1 {
@@ -43,6 +59,62 @@ code {
 .header p {
   font-size: 1.1rem;
   opacity: 0.9;
+}
+
+.language-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.language-toggle:hover {
+  background: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.language-toggle:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.language-toggle::before {
+  content: '🌐';
+  font-size: 18px;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.language-toggle:hover::before {
+  animation-play-state: paused;
+}
+
+[dir="rtl"] .language-toggle {
+  right: auto;
+  left: 20px;
 }
 
 .form-section {

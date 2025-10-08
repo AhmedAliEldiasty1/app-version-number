@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 /**
  * App type configuration
@@ -48,13 +49,15 @@ const AppSelector: React.FC<AppSelectorProps> = ({
   onAppTypeChange,
   appConfigs = {},
 }) => {
+  const { t } = useLanguage();
+
   // App types configuration
   const appTypes = useMemo<AppType[]>(
     () => [
-      { value: "employee", name: "Employee App", icon: "👨‍💼" },
-      { value: "OurEducation", name: "Parent App", icon: "👨‍👩‍👧" },
+      { value: "employee", name: t.employeeApp, icon: "👨‍💼" },
+      { value: "OurEducation", name: t.parentApp, icon: "👨‍👩‍👧" },
     ],
-    []
+    [t]
   );
 
   /**
@@ -104,20 +107,20 @@ const AppSelector: React.FC<AppSelectorProps> = ({
 
   return (
     <div className="form-section">
-      <h2>🔧 Configuration</h2>
+      <h2>{t.configurationTitle}</h2>
 
       <div className="form-group">
         <label htmlFor="schoolSelect">
-          Select School: <span className="required">*</span>
+          {t.selectSchool}: <span className="required">{t.required}</span>
         </label>
         <select
           id="schoolSelect"
           value={selectedSchool}
           onChange={handleSchoolChange}
-          aria-label="Select school"
+          aria-label={t.selectSchool}
           aria-required="true"
         >
-          <option value="">Choose a school...</option>
+          <option value="">{t.selectSchoolPlaceholder}</option>
           {sortedSchoolEntries.map(([key, config]) => (
             <option key={key} value={key}>
               {config.name}
@@ -128,19 +131,19 @@ const AppSelector: React.FC<AppSelectorProps> = ({
 
       <div className="form-group">
         <label htmlFor="appTypeSelect">
-          Select App Type: <span className="required">*</span>
+          {t.selectAppType}: <span className="required">{t.required}</span>
         </label>
         <select
           id="appTypeSelect"
           value={selectedAppType}
           onChange={handleAppTypeChange}
-          aria-label="Select app type"
+          aria-label={t.selectAppType}
           aria-required="true"
         >
-          <option value="">Choose an app type...</option>
+          <option value="">{t.selectAppTypePlaceholder}</option>
           {appTypes.map((app) => (
             <option key={app.value} value={app.value}>
-              {app.icon} {app.name}
+              {app.name}
             </option>
           ))}
         </select>
@@ -148,18 +151,16 @@ const AppSelector: React.FC<AppSelectorProps> = ({
 
       {currentSchoolConfig && (
         <div className="form-group">
-          <label htmlFor="baseUrl">API Base URL:</label>
+          <label htmlFor="baseUrl">{t.apiBaseUrl}:</label>
           <input
             type="text"
             id="baseUrl"
             value={currentSchoolConfig.baseUrl}
             readOnly
-            aria-label="API base URL"
+            aria-label={t.apiBaseUrl}
             className="readonly-input"
           />
-          <small className="help-text">
-            This URL is used for all API requests to the selected school
-          </small>
+          <small className="help-text">{t.apiBaseUrlHelp}</small>
         </div>
       )}
     </div>
