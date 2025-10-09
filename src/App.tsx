@@ -5,6 +5,7 @@ import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
 import SchoolManager from "./components/SchoolManager";
 import SchoolList from "./components/SchoolList";
+import { CloudSync } from "./components/CloudSync";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
 import { APP_CONFIGS } from "./utils/config";
@@ -84,6 +85,12 @@ function App() {
       setSelectedSchool("");
       setVersions([]);
     }
+  };
+
+  // Handle cloud sync complete
+  const handleSyncComplete = (schools: Record<string, { name: string; baseUrl: string }>) => {
+    setCustomSchools(schools);
+    localStorage.setItem("customSchools", JSON.stringify(schools));
   };
 
   // Function to fetch versions
@@ -253,6 +260,11 @@ function App() {
           onDeleteSchool={handleDeleteSchool}
         />
       </div>
+
+      <CloudSync
+        customSchools={customSchools}
+        onSyncComplete={handleSyncComplete}
+      />
 
       <AppSelector
         selectedSchool={selectedSchool}

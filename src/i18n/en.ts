@@ -115,4 +115,15 @@ export const en = {
   noSchools: "No schools available",
   builtIn: "Built-in",
   cannotDeleteBuiltIn: "Cannot delete built-in schools",
+
+  // Cloud Sync
+  cloudSync: "Cloud Sync",
+  uploadToCloud: "Upload to Cloud",
+  downloadFromCloud: "Download from Cloud",
+  syncedToCloud: "Uploaded to cloud successfully!",
+  syncedFromCloud: "Downloaded from cloud successfully!",
+  syncError: "Sync error. Check your connection.",
+  cloudSyncEnabled: "Cloud sync enabled",
+  cloudSyncDisabled: "Cloud sync disabled",
+  cloudSyncHelp: "💡 Enable cloud sync to share schools across all your devices",
 };

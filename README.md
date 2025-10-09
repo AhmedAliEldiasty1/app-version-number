@@ -8,7 +8,10 @@ A React application for managing mobile app versions across different applicatio
 - **Dynamic Base URLs**: Each app has its own API endpoint
 - **Version Management**: List and add/update app versions
 - **Platform Support**: Handle both iOS and Android versions
-- **Clean UI**: Simple and responsive design
+- **School Management**: Add and manage custom school API URLs
+- **☁️ Cloud Sync**: Sync custom schools across devices (NEW!)
+- **Multi-Language**: Support for Arabic and English with RTL
+- **Clean UI**: Modern card-based design with smooth animations
 
 ## Getting Started
 
@@ -16,6 +19,7 @@ A React application for managing mobile app versions across different applicatio
 
 - Node.js (version 14 or higher)
 - npm or yarn
+- (Optional) Firebase account for cloud sync
 
 ### Installation
 
@@ -25,15 +29,42 @@ A React application for managing mobile app versions across different applicatio
 npm install
 ```
 
-2. Start the development server:
+2. **(Optional) Setup Firebase for Cloud Sync:**
+
+   Follow the detailed guide: [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md)
+
+3. Start the development server:
 
 ```bash
 npm start
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Usage
+
+### School Management
+
+#### Add Custom School
+1. Click the purple "Add School" button
+2. Enter school name and API URLs
+3. Click "Add School" to save
+
+#### Delete Custom School
+1. Click the green "View Schools" button
+2. Find the school you want to delete
+3. Click the red "Delete" button
+4. Confirm deletion
+
+#### Cloud Sync (Cross-Device Access)
+1. Setup Firebase (see [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md))
+2. Toggle "Enable Cloud Sync" to ON
+3. Click "Upload to Cloud" to save schools
+4. Open app on another device
+5. Toggle ON and click "Download from Cloud"
+6. Your schools are now synced!
+
+For detailed cloud sync instructions: [Cloud Sync User Guide](./CLOUD_SYNC_USER_GUIDE.md)
 
 ### Configuration
 

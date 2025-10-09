@@ -115,6 +115,17 @@ export interface Translations {
   noSchools: string;
   builtIn: string;
   cannotDeleteBuiltIn: string;
+
+  // Cloud Sync
+  cloudSync: string;
+  uploadToCloud: string;
+  downloadFromCloud: string;
+  syncedToCloud: string;
+  syncedFromCloud: string;
+  syncError: string;
+  cloudSyncEnabled: string;
+  cloudSyncDisabled: string;
+  cloudSyncHelp: string;
 }
 
 export const translations: Record<"ar" | "en", Translations> = {
