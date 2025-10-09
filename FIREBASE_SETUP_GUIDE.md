@@ -32,7 +32,7 @@ const firebaseConfig = {
   projectId: "your-project-id",
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdefghijklmnop"
+  appId: "1:123456789012:web:abcdefghijklmnop",
 };
 ```
 
@@ -159,6 +159,7 @@ This allows users to authenticate without creating accounts, but still provides 
 ## Step 7: Test Your Setup
 
 1. Start your development server:
+
    ```bash
    npm start
    # or
@@ -172,6 +173,7 @@ This allows users to authenticate without creating accounts, but still provides 
 4. Toggle **"Enable Cloud Sync"** to ON
 
 5. If you have custom schools, click **"Upload to Cloud"**
+
    - You should see "Successfully synced to cloud!"
    - Check Firebase Console → Firestore Database to see your data
 
@@ -215,22 +217,26 @@ This allows users to authenticate without creating accounts, but still provides 
 ## How to Use Cloud Sync
 
 ### Enable Cloud Sync
+
 1. Toggle **"Enable Cloud Sync"** to ON
 2. This enables real-time synchronization
 3. Changes will automatically sync across devices
 
 ### Upload Schools to Cloud
+
 1. Click **"Upload to Cloud"** button (purple)
 2. All your custom schools will be saved to Firebase
 3. You'll see a success message
 
 ### Download Schools from Cloud
+
 1. Click **"Download from Cloud"** button (green)
 2. All schools from Firebase will be downloaded
 3. They'll merge with your local schools
 4. You'll see a success message
 
 ### Automatic Sync
+
 - When "Enable Cloud Sync" is ON, changes sync automatically
 - Add a school on Device A → It appears on Device B instantly
 - Delete a school on Device B → It disappears on Device A instantly

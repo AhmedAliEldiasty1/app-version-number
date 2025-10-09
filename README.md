@@ -46,17 +46,20 @@ npm start
 ### School Management
 
 #### Add Custom School
+
 1. Click the purple "Add School" button
 2. Enter school name and API URLs
 3. Click "Add School" to save
 
 #### Delete Custom School
+
 1. Click the green "View Schools" button
 2. Find the school you want to delete
 3. Click the red "Delete" button
 4. Confirm deletion
 
 #### Cloud Sync (Cross-Device Access)
+
 1. Setup Firebase (see [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md))
 2. Toggle "Enable Cloud Sync" to ON
 3. Click "Upload to Cloud" to save schools

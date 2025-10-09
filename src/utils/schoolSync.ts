@@ -9,6 +9,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { rateLimitedOperation } from "./rateLimit";
 
 export interface SchoolConfig {
   name: string;
@@ -23,25 +24,27 @@ const SCHOOLS_COLLECTION = "schools";
  * Cloud School Sync Service
  * Syncs custom schools across devices using Firebase Firestore
  */
+// Keep track of active subscription
+let activeSubscription: (() => void) | null = null;
+
 export class SchoolSyncService {
   /**
-   * Save a school to the cloud
+   * Save a school to the cloud with rate limiting and retries
    */
-  static async saveSchool(
-    key: string,
-    config: SchoolConfig
-  ): Promise<void> {
-    try {
-      const schoolRef = doc(db, SCHOOLS_COLLECTION, key);
-      await setDoc(schoolRef, {
-        ...config,
-        updatedAt: Timestamp.now(),
-        createdAt: Timestamp.now(),
-      });
-    } catch (error) {
-      console.error("Error saving school to cloud:", error);
-      throw new Error("Failed to save school to cloud");
-    }
+  static async saveSchool(key: string, config: SchoolConfig): Promise<void> {
+    return rateLimitedOperation(async () => {
+      try {
+        const schoolRef = doc(db, SCHOOLS_COLLECTION, key);
+        await setDoc(schoolRef, {
+          ...config,
+          updatedAt: Timestamp.now(),
+          createdAt: Timestamp.now(),
+        });
+      } catch (error) {
+        console.error("Error saving school to cloud:", error);
+        throw error;
+      }
+    });
   }
 
   /**
@@ -113,27 +116,69 @@ export class SchoolSyncService {
   static async syncToCloud(
     localSchools: Record<string, SchoolConfig>
   ): Promise<void> {
-    try {
-      const promises = Object.entries(localSchools).map(([key, config]) =>
-        this.saveSchool(key, config)
-      );
-      await Promise.all(promises);
-    } catch (error) {
-      console.error("Error syncing to cloud:", error);
-      throw new Error("Failed to sync to cloud");
-    }
+    return rateLimitedOperation(async () => {
+      try {
+        // First get current cloud schools to handle deletions
+        const cloudSchools = await this.getAllSchools();
+
+        // Find schools to delete (in cloud but not in local)
+        const schoolsToDelete = Object.keys(cloudSchools).filter(
+          (key) => !localSchools[key]
+        );
+
+        // Find schools to save/update (in local)
+        const schoolsToSave = Object.entries(localSchools);
+
+        // Process in batches to avoid rate limits
+        const batchSize = 5;
+
+        // Delete in batches
+        for (let i = 0; i < schoolsToDelete.length; i += batchSize) {
+          const batch = schoolsToDelete.slice(i, i + batchSize);
+          await Promise.all(batch.map((key) => this.deleteSchool(key)));
+          if (i + batchSize < schoolsToDelete.length) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
+
+        // Save in batches
+        for (let i = 0; i < schoolsToSave.length; i += batchSize) {
+          const batch = schoolsToSave.slice(i, i + batchSize);
+          await Promise.all(
+            batch.map(([key, config]) => this.saveSchool(key, config))
+          );
+          if (i + batchSize < schoolsToSave.length) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
+      } catch (error) {
+        console.error("Error syncing to cloud:", error);
+        throw error;
+      }
+    });
   }
 
   /**
-   * Subscribe to real-time updates
+   * Subscribe to real-time updates with singleton pattern
    */
   static subscribeToSchools(
     callback: (schools: Record<string, SchoolConfig>) => void
   ): () => void {
+    // If there's an active subscription, unsubscribe first
+    if (activeSubscription) {
+      console.log("Cleaning up existing subscription");
+      activeSubscription();
+      activeSubscription = null;
+    }
+
+    console.log("Setting up new subscription");
     const schoolsRef = collection(db, SCHOOLS_COLLECTION);
 
     const unsubscribe = onSnapshot(
       schoolsRef,
+      {
+        includeMetadataChanges: false, // Only get actual data changes
+      },
       (snapshot) => {
         const schools: Record<string, SchoolConfig> = {};
         snapshot.forEach((doc) => {
@@ -149,9 +194,21 @@ export class SchoolSyncService {
       },
       (error) => {
         console.error("Error subscribing to schools:", error);
+        if (error.code === "resource-exhausted") {
+          // Implement exponential backoff for resubscription
+          setTimeout(() => {
+            console.log("Attempting to resubscribe after error");
+            this.subscribeToSchools(callback);
+          }, 5000);
+        }
       }
     );
 
-    return unsubscribe;
+    activeSubscription = unsubscribe;
+    return () => {
+      console.log("Unsubscribing from schools");
+      unsubscribe();
+      activeSubscription = null;
+    };
   }
 }

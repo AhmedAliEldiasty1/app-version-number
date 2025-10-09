@@ -300,6 +300,7 @@ Conflict Resolution:
 ### Alternative Strategies (Not Implemented)
 
 #### Replace Strategy
+
 ```
 Local:  [A, B, C]
 Cloud:  [B, C, D]
@@ -307,6 +308,7 @@ Result: [B, C, D]  ← Cloud replaces local
 ```
 
 #### Timestamp Strategy
+
 ```
 Local:  [A (time: 10:00)]
 Cloud:  [A (time: 10:05)]
@@ -372,6 +374,7 @@ Result: [A (time: 10:05)]  ← Newer wins
 ## Performance Characteristics
 
 ### Upload Performance
+
 ```
 1 school:    ~100ms
 10 schools:  ~1 second
@@ -379,6 +382,7 @@ Result: [A (time: 10:05)]  ← Newer wins
 ```
 
 ### Download Performance
+
 ```
 1 school:    ~100ms
 10 schools:  ~500ms
@@ -386,6 +390,7 @@ Result: [A (time: 10:05)]  ← Newer wins
 ```
 
 ### Real-Time Sync
+
 ```
 Latency:      < 1 second
 Throughput:   Unlimited (within Firebase quotas)
@@ -416,12 +421,14 @@ Check Error Type
 ## Scalability
 
 ### Current Implementation
+
 - **Users**: Unlimited (public Firestore)
 - **Schools**: ~1000 per device (practical limit)
 - **Devices**: Unlimited per user
 - **Concurrent Edits**: Supported (last write wins)
 
 ### Firebase Limits (Free Tier)
+
 - **Storage**: 1 GB
 - **Reads**: 50K/day
 - **Writes**: 20K/day
@@ -429,6 +436,7 @@ Check Error Type
 - **Bandwidth**: 10 GB/month
 
 ### Estimated Capacity
+
 - 1 school = ~1 KB
 - 1 GB = ~1 million schools
 - 50K reads/day = ~2000 users/day (25 reads each)
@@ -453,12 +461,14 @@ CloudSync Component
 ## Monitoring & Debugging
 
 ### Firebase Console
+
 - **Firestore Database**: View all schools
 - **Usage**: Check read/write counts
 - **Rules**: Test security rules
 - **Logs**: View error logs
 
 ### Browser DevTools
+
 - **Console**: Error messages
 - **Network**: Firebase API calls
 - **Application**: localStorage data
@@ -472,4 +482,4 @@ CloudSync Component
 ✅ Cross-device compatibility  
 ✅ Scalable cloud storage  
 ✅ Secure with Firestore rules  
-✅ Free for personal use  
+✅ Free for personal use

@@ -1,19 +1,27 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 // Firebase configuration
-// You'll need to replace these with your actual Firebase project credentials
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD6sJOd2uwWM72yrF3L-9eOeMANJXqK_Fg",
+  authDomain: "education-app-manager.firebaseapp.com",
+  projectId: "education-app-manager",
+  storageBucket: "education-app-manager.firebasestorage.app",
+  messagingSenderId: "1066913226439",
+  appId: "1:1066913226439:web:5bbbb2cfface59748ba8e2",
+  measurementId: "G-8BP93HCSE2",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase only if it hasn't been initialized yet
+let app: FirebaseApp;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+  console.log("✅ Firebase initialized successfully");
+} else {
+  app = getApps()[0];
+  console.log("✅ Firebase already initialized, reusing existing instance");
+}
 
-// Initialize Firestore
-export const db = getFirestore(app);
+// Initialize Firestore with explicit type
+export const db: Firestore = getFirestore(app);
+console.log("✅ Firestore initialized successfully");

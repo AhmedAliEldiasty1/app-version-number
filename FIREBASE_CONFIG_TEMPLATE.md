@@ -81,7 +81,7 @@ const firebaseConfig = {
 
 After updating your configuration, verify:
 
-- [ ] All placeholder text replaced (no "YOUR_" text remaining)
+- [ ] All placeholder text replaced (no "YOUR\_" text remaining)
 - [ ] apiKey starts with "AIza"
 - [ ] authDomain ends with ".firebaseapp.com"
 - [ ] storageBucket ends with ".appspot.com"
@@ -93,40 +93,51 @@ After updating your configuration, verify:
 ## Common Mistakes
 
 ### ❌ Wrong: Keeping placeholder text
+
 ```typescript
 apiKey: "YOUR_API_KEY_HERE",  // Wrong!
 ```
 
 ### ✅ Right: Actual Firebase API key
+
 ```typescript
 apiKey: "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567",  // Correct!
 ```
 
 ### ❌ Wrong: Missing quotes
+
 ```typescript
 apiKey: AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567,  // Wrong!
 ```
 
 ### ✅ Right: Properly quoted
+
 ```typescript
 apiKey: "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567",  // Correct!
 ```
 
 ### ❌ Wrong: Using someone else's config
+
 ```typescript
 // Copied from tutorial or GitHub repo
-const firebaseConfig = { /* someone else's credentials */ };  // Wrong!
+const firebaseConfig = {
+  /* someone else's credentials */
+}; // Wrong!
 ```
 
 ### ✅ Right: Your own Firebase project config
+
 ```typescript
 // Your own Firebase project credentials
-const firebaseConfig = { /* your credentials from Firebase Console */ };  // Correct!
+const firebaseConfig = {
+  /* your credentials from Firebase Console */
+}; // Correct!
 ```
 
 ## Security Notes
 
 ### Safe to Expose Publicly ✅
+
 - `apiKey` - Not a secret, safe in client-side code
 - `authDomain` - Public domain name
 - `projectId` - Public identifier
@@ -135,12 +146,14 @@ const firebaseConfig = { /* your credentials from Firebase Console */ };  // Cor
 - `appId` - Public app identifier
 
 ### How Security Works 🔒
+
 - **Firestore Security Rules** protect your data, not the API key
 - API key identifies your Firebase project, doesn't grant access
 - Security rules determine who can read/write data
 - Authentication determines user identity
 
 ### Best Practices 📋
+
 1. Set proper Firestore Security Rules (see FIREBASE_SETUP_GUIDE.md)
 2. Enable authentication if you need private data
 3. Use environment variables in production (optional)
@@ -152,6 +165,7 @@ const firebaseConfig = { /* your credentials from Firebase Console */ };  // Cor
 For production deployments, you can use environment variables:
 
 ### .env.local (create this file)
+
 ```bash
 REACT_APP_FIREBASE_API_KEY=your_api_key
 REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -162,6 +176,7 @@ REACT_APP_FIREBASE_APP_ID=your_app_id
 ```
 
 ### Update firebase.ts
+
 ```typescript
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -174,6 +189,7 @@ const firebaseConfig = {
 ```
 
 ### .gitignore (add this line)
+
 ```
 .env.local
 ```
@@ -188,6 +204,7 @@ After updating `src/utils/firebase.ts`:
 2. **Restart development server** (Ctrl+C, then `npm start`)
 3. **Open browser console** (F12)
 4. **Look for errors**:
+
    - ✅ No errors = Configuration correct
    - ❌ "Firebase: Error (auth/api-key-not-valid-please-pass-a-valid-api-key)" = Check apiKey
    - ❌ "Firebase: Error (app/invalid-credential)" = Check all credentials
@@ -201,25 +218,33 @@ After updating `src/utils/firebase.ts`:
 ## Troubleshooting
 
 ### Error: "Firebase: Error (auth/api-key-not-valid-please-pass-a-valid-api-key)"
-**Solution**: 
+
+**Solution**:
+
 - Copy apiKey again from Firebase Console
 - Make sure there are no extra spaces
 - Verify it starts with "AIza"
 
 ### Error: "Firebase: Error (app/invalid-credential)"
-**Solution**: 
+
+**Solution**:
+
 - Verify all credentials are from the same Firebase project
 - Copy the entire config object again
 - Don't mix credentials from different projects
 
 ### Error: "Firebase: Firebase App named '[DEFAULT]' already exists"
-**Solution**: 
+
+**Solution**:
+
 - You initialized Firebase twice
 - Remove duplicate initialization
 - Only call `initializeApp()` once
 
 ### No Error But Not Working
-**Solution**: 
+
+**Solution**:
+
 1. Check Firestore is enabled in Firebase Console
 2. Verify Security Rules allow read/write
 3. Check browser console for silent errors

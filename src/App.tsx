@@ -69,26 +69,42 @@ function App() {
     const updated = { ...customSchools, [key]: config };
     setCustomSchools(updated);
     localStorage.setItem("customSchools", JSON.stringify(updated));
+
+    // Trigger sync complete to ensure cloud state is updated
+    handleSyncComplete(updated);
+
     // Auto-select the new school
     setSelectedSchool(key);
   };
 
   // Handle deleting a school
-  const handleDeleteSchool = (key: string) => {
-    const updated = { ...customSchools };
-    delete updated[key];
-    setCustomSchools(updated);
-    localStorage.setItem("customSchools", JSON.stringify(updated));
+  const handleDeleteSchool = async (key: string) => {
+    try {
+      // Remove from local state first
+      const updated = { ...customSchools };
+      delete updated[key];
+      setCustomSchools(updated);
 
-    // If the deleted school was selected, clear selection
-    if (selectedSchool === key) {
-      setSelectedSchool("");
-      setVersions([]);
+      // Update localStorage
+      localStorage.setItem("customSchools", JSON.stringify(updated));
+
+      // If the deleted school was selected, clear selection
+      if (selectedSchool === key) {
+        setSelectedSchool("");
+        setVersions([]);
+      }
+
+      // handleSyncComplete will trigger cloud sync through CloudSync component
+      handleSyncComplete(updated);
+    } catch (error) {
+      console.error("Error deleting school:", error);
     }
   };
 
   // Handle cloud sync complete
-  const handleSyncComplete = (schools: Record<string, { name: string; baseUrl: string }>) => {
+  const handleSyncComplete = (
+    schools: Record<string, { name: string; baseUrl: string }>
+  ) => {
     setCustomSchools(schools);
     localStorage.setItem("customSchools", JSON.stringify(schools));
   };

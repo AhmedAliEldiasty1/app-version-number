@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { SchoolSyncService } from "../utils/schoolSync";
+import { testFirestoreConnection } from "../utils/firestoreTest";
 
 interface CloudSyncProps {
   customSchools: Record<string, { name: string; baseUrl: string }>;
-  onSyncComplete: (schools: Record<string, { name: string; baseUrl: string }>) => void;
+  onSyncComplete: (
+    schools: Record<string, { name: string; baseUrl: string }>
+  ) => void;
 }
 
 export const CloudSync: React.FC<CloudSyncProps> = ({
@@ -13,38 +16,85 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
 }) => {
   const { t } = useLanguage();
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<"idle" | "success" | "error">("idle");
+  const [syncStatus, setSyncStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
   const [isCloudEnabled, setIsCloudEnabled] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Initialize cloud sync state
   useEffect(() => {
-    // Check if cloud sync is enabled
     const enabled = localStorage.getItem("cloudSyncEnabled") === "true";
+    console.log("Initial cloud sync state:", enabled);
     setIsCloudEnabled(enabled);
+  }, []); // Only on mount
 
-    // Subscribe to real-time updates if enabled
-    if (enabled) {
+  // Handle cloud sync state changes and subscriptions
+  useEffect(() => {
+    localStorage.setItem("cloudSyncEnabled", String(isCloudEnabled));
+    console.log("Cloud sync state updated:", isCloudEnabled);
+
+    if (isCloudEnabled) {
+      console.log("Cloud sync enabled, subscribing to updates");
       const unsubscribe = SchoolSyncService.subscribeToSchools((schools) => {
         onSyncComplete(schools);
       });
-      return () => unsubscribe();
-    }
-  }, [isCloudEnabled, onSyncComplete]);
 
+      return () => {
+        console.log("Unsubscribing from cloud updates");
+        unsubscribe();
+      };
+    }
+  }, [isCloudEnabled]); // Only when cloud sync is toggled
+
+  // Debounced sync effect
+  useEffect(() => {
+    if (!isCloudEnabled) return;
+
+    const timer = setTimeout(() => {
+      console.log("Debounced sync to cloud", customSchools);
+      handleSyncToCloud();
+    }, 2000); // Debounce for 2 seconds
+
+    return () => clearTimeout(timer);
+  }, [customSchools, isCloudEnabled]);
   const handleSyncToCloud = async () => {
+    if (!isCloudEnabled) {
+      console.log("Cloud sync is disabled, skipping sync");
+      return;
+    }
+
     setIsSyncing(true);
     setSyncStatus("idle");
     setMessage("");
 
     try {
+      console.log("Starting cloud sync with schools:", customSchools);
       await SchoolSyncService.syncToCloud(customSchools);
       setSyncStatus("success");
       setMessage(t.syncedToCloud);
       setTimeout(() => setSyncStatus("idle"), 3000);
-    } catch (error) {
-      setSyncStatus("error");
-      setMessage(t.syncError);
+    } catch (error: any) {
       console.error("Sync error:", error);
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
+
+      setSyncStatus("error");
+
+      // Show specific error message based on error code
+      if (error.code === "permission-denied") {
+        setMessage(
+          "❌ Permission denied. Check Firestore Security Rules (see console for details)"
+        );
+      } else if (error.code === "failed-precondition") {
+        setMessage(
+          "❌ Firestore not enabled. Check Firebase Console (see console for details)"
+        );
+      } else if (error.code === "unavailable") {
+        setMessage("❌ Network error. Check your internet connection");
+      } else {
+        setMessage(t.syncError);
+      }
     } finally {
       setIsSyncing(false);
     }
@@ -70,18 +120,18 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
     }
   };
 
-  const toggleCloudSync = () => {
+  const toggleCloudSync = useCallback(() => {
     const newValue = !isCloudEnabled;
+    console.log("Toggling cloud sync to:", newValue);
     setIsCloudEnabled(newValue);
-    localStorage.setItem("cloudSyncEnabled", String(newValue));
-    
+
     if (newValue) {
       setMessage(t.cloudSyncEnabled);
       handleSyncFromCloud();
     } else {
       setMessage(t.cloudSyncDisabled);
     }
-  };
+  }, [isCloudEnabled, handleSyncFromCloud, t]);
 
   return (
     <div className="cloud-sync-container">
@@ -102,7 +152,7 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
           <button
             className="btn-cloud-sync btn-upload"
             onClick={handleSyncToCloud}
-            disabled={isSyncing || Object.keys(customSchools).length === 0}
+            disabled={isSyncing}
           >
             {isSyncing ? "⏳" : "☁️⬆️"} {t.uploadToCloud}
           </button>

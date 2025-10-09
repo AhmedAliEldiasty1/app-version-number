@@ -26,17 +26,19 @@ When enabled, all changes sync automatically across devices:
 You have full control with manual buttons:
 
 #### Upload to Cloud (Purple Button)
+
 - **What it does**: Saves all your custom schools to Firebase
 - **When to use**:
   - First time setup
   - After adding many schools offline
   - To backup your current list
-- **Behavior**: 
+- **Behavior**:
   - Merges with existing cloud data
   - Doesn't delete schools already in cloud
   - Disabled when you have no custom schools
 
 #### Download from Cloud (Green Button)
+
 - **What it does**: Fetches all schools from Firebase
 - **When to use**:
   - First time on a new device
@@ -50,12 +52,14 @@ You have full control with manual buttons:
 ### 🎛️ Enable/Disable Toggle
 
 **ON (Enabled)**:
+
 - ✅ Real-time sync active
 - ✅ Changes sync automatically
 - ✅ Listens for updates from other devices
 - ⚡ Uses internet connection
 
 **OFF (Disabled)**:
+
 - ❌ Real-time sync inactive
 - ✅ Manual buttons still work
 - ✅ Schools saved locally (localStorage)
@@ -66,12 +70,14 @@ You have full control with manual buttons:
 ### Scenario 1: First Time Setup
 
 **On Your First Device:**
+
 1. Add your custom schools normally
 2. Toggle "Enable Cloud Sync" to ON
 3. Click "Upload to Cloud"
 4. ✅ Success! Your schools are in the cloud
 
 **On Your Other Devices:**
+
 1. Open the app
 2. Toggle "Enable Cloud Sync" to ON
 3. Click "Download from Cloud"
@@ -97,11 +103,13 @@ You have full control with manual buttons:
 ### Scenario 4: Sharing with Team
 
 **Setup:**
+
 - All team members follow [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md)
 - Everyone uses the same Firebase project configuration
 - Set Security Rules to allow read/write for all
 
 **Usage:**
+
 - Each person adds schools from their device
 - Everyone sees all schools in real-time
 - Perfect for school management teams!
@@ -109,11 +117,13 @@ You have full control with manual buttons:
 ### Scenario 5: Backup & Restore
 
 **Backup:**
+
 1. Toggle "Enable Cloud Sync" to ON
 2. Click "Upload to Cloud"
 3. ✅ Your schools are backed up in Firebase
 
 **Restore:**
+
 1. Open app on new device
 2. Toggle "Enable Cloud Sync" to ON
 3. Click "Download from Cloud"
@@ -126,16 +136,19 @@ You have full control with manual buttons:
 Cloud sync **merges** data rather than replacing:
 
 **Example 1: Upload**
+
 - Local schools: School A, School B
 - Cloud schools: School C
 - After upload: School A, School B, School C (in cloud)
 
 **Example 2: Download**
+
 - Local schools: School A, School B
 - Cloud schools: School C, School D
 - After download: School A, School B, School C, School D (locally)
 
 **Example 3: Conflict**
+
 - Local: School A (URL: http://old.com)
 - Cloud: School A (URL: http://new.com)
 - After download: School A (URL: http://new.com) ← Cloud version wins
@@ -143,6 +156,7 @@ Cloud sync **merges** data rather than replacing:
 ### What Gets Synced
 
 **Synced:**
+
 - ✅ Custom schools you added
 - ✅ School name
 - ✅ Student API URL
@@ -150,6 +164,7 @@ Cloud sync **merges** data rather than replacing:
 - ✅ Teacher API URL
 
 **NOT Synced:**
+
 - ❌ Built-in schools (AlQalam, Alwelan, Alaqlam, etc.)
 - ❌ Selected school
 - ❌ Selected app type
@@ -161,24 +176,29 @@ Cloud sync **merges** data rather than replacing:
 ### Success Messages (Green)
 
 **"Successfully synced to cloud!"**
+
 - ✅ Upload completed successfully
 - All schools are now in Firebase
 
 **"Successfully synced from cloud!"**
+
 - ✅ Download completed successfully
 - All cloud schools are now local
 
 **"Cloud sync enabled"**
+
 - ✅ Real-time sync is now active
 - Changes will sync automatically
 
 **"Cloud sync disabled"**
+
 - ℹ️ Real-time sync is now inactive
 - Manual buttons still work
 
 ### Error Messages (Red)
 
 **"Error syncing to cloud: [details]"**
+
 - ❌ Upload failed
 - Common causes:
   - No internet connection
@@ -187,6 +207,7 @@ Cloud sync **merges** data rather than replacing:
 - Solution: Check error details, verify setup
 
 **"Error syncing from cloud: [details]"**
+
 - ❌ Download failed
 - Common causes:
   - No internet connection
@@ -197,6 +218,7 @@ Cloud sync **merges** data rather than replacing:
 ## Tips & Best Practices
 
 ### ✅ DO:
+
 - Enable cloud sync on all your devices
 - Upload before switching devices
 - Download when first opening on a new device
@@ -204,6 +226,7 @@ Cloud sync **merges** data rather than replacing:
 - Upload after making many changes
 
 ### ❌ DON'T:
+
 - Don't share your Firebase config publicly (if using private security rules)
 - Don't delete from cloud unless you're sure
 - Don't disable sync if you want automatic updates
@@ -214,12 +237,14 @@ Cloud sync **merges** data rather than replacing:
 ### Changes don't sync between devices
 
 **Check:**
+
 1. Is "Enable Cloud Sync" toggled ON on both devices?
 2. Do both devices have internet connection?
 3. Did you upload from first device before downloading on second?
 4. Check browser console (F12) for error messages
 
 **Solution:**
+
 - Toggle OFF then ON to restart sync
 - Manually click "Upload to Cloud" then "Download from Cloud"
 - Verify Firebase setup is correct
@@ -229,6 +254,7 @@ Cloud sync **merges** data rather than replacing:
 **Cause:** You don't have any custom schools yet
 
 **Solution:**
+
 - Add at least one custom school using the "Add School" button
 - Upload button will become enabled automatically
 
@@ -237,6 +263,7 @@ Cloud sync **merges** data rather than replacing:
 **Cause:** Firestore Security Rules are too restrictive
 
 **Solution:**
+
 - Check Firebase Console → Firestore → Rules
 - Verify rules allow read/write access
 - See [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md) Step 5
@@ -246,6 +273,7 @@ Cloud sync **merges** data rather than replacing:
 **Cause:** Real-time sync is overwriting your data
 
 **Solution:**
+
 - This means someone else deleted it from another device
 - Or you have conflicting data between devices
 - Upload your local data to restore it
@@ -255,6 +283,7 @@ Cloud sync **merges** data rather than replacing:
 **Cause:** Many schools or slow internet
 
 **Solution:**
+
 - Cloud sync is fast for normal use (<100 schools)
 - Check your internet connection speed
 - Consider disabling real-time sync if not needed
@@ -263,6 +292,7 @@ Cloud sync **merges** data rather than replacing:
 ## Data Privacy & Security
 
 ### Your Data
+
 - Stored in Google Firebase (secure Google servers)
 - Encrypted in transit (HTTPS)
 - Encrypted at rest (Firebase default)
@@ -271,21 +301,25 @@ Cloud sync **merges** data rather than replacing:
 ### Privacy Options
 
 **Public (Option A in setup guide):**
+
 - Anyone with Firebase config can read/write
 - Good for: Small teams, shared school lists
 - Not recommended for: Sensitive school data
 
 **Read-Only for Others (Option B):**
+
 - Anyone can read, only you can write
 - Requires: Firebase Authentication
 - Good for: Publishing school lists
 
 **Private (Option C):**
+
 - Only authenticated users can read/write
 - Requires: Firebase Authentication
 - Good for: Personal use, sensitive data
 
 ### Best Practices
+
 - Use Option B or C for production
 - Don't share Firebase config publicly if using private mode
 - Regularly backup your data
@@ -294,6 +328,7 @@ Cloud sync **merges** data rather than replacing:
 ## Technical Details
 
 ### Storage Location
+
 - Collection: `schools`
 - Document ID: School key (e.g., "CustomSchool1")
 - Document Fields:
@@ -307,18 +342,21 @@ Cloud sync **merges** data rather than replacing:
   ```
 
 ### Local Storage
+
 - Key: `customSchools`
 - Format: JSON string
 - Backup: Automatically saved locally
 - Cleared: Only when you clear browser data
 
 ### Network Usage
+
 - Real-time sync: ~1KB per change
 - Upload: ~1KB per school
 - Download: ~1KB per school
 - Free tier: 50K reads + 20K writes per day
 
 ### Browser Compatibility
+
 - ✅ Chrome, Edge, Firefox, Safari (latest)
 - ✅ Mobile browsers (iOS Safari, Chrome Android)
 - ❌ Internet Explorer (not supported)
@@ -355,6 +393,7 @@ A: Not in the app. You can view Firestore Database in Firebase Console to see al
 ## Support
 
 For technical issues:
+
 1. Check browser console (F12) for errors
 2. Verify Firebase setup is correct
 3. Check [Firebase Setup Guide](./FIREBASE_SETUP_GUIDE.md)
@@ -362,12 +401,14 @@ For technical issues:
 5. Check Firebase Console for database status
 
 For feature requests or bugs:
+
 - Create an issue in the project repository
 - Include error messages and steps to reproduce
 
 ## Summary
 
 Cloud Sync makes your school list accessible everywhere:
+
 - ☁️ **Cloud Storage**: Schools stored in Firebase
 - 🔄 **Real-Time Sync**: Changes appear instantly
 - 🎛️ **Manual Control**: Upload/Download buttons

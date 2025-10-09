@@ -125,5 +125,6 @@ export const en = {
   syncError: "Sync error. Check your connection.",
   cloudSyncEnabled: "Cloud sync enabled",
   cloudSyncDisabled: "Cloud sync disabled",
-  cloudSyncHelp: "💡 Enable cloud sync to share schools across all your devices",
+  cloudSyncHelp:
+    "💡 Enable cloud sync to share schools across all your devices",
 };
