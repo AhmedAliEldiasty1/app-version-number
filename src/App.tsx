@@ -9,6 +9,7 @@ import { CloudSync } from "./components/CloudSync";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
 import { APP_CONFIGS } from "./utils/config";
+import { SchoolSyncService } from "./utils/schoolSync";
 
 /**
  * Version data interface
@@ -62,7 +63,7 @@ function App() {
   }, []);
 
   // Handle adding new school
-  const handleAddSchool = (
+  const handleAddSchool = async (
     key: string,
     config: { name: string; baseUrl: string }
   ) => {
@@ -70,8 +71,18 @@ function App() {
     setCustomSchools(updated);
     localStorage.setItem("customSchools", JSON.stringify(updated));
 
-    // Trigger sync complete to ensure cloud state is updated
-    handleSyncComplete(updated);
+    try {
+      // Check if cloud sync is enabled
+      const isCloudEnabled =
+        localStorage.getItem("cloudSyncEnabled") === "true";
+      if (isCloudEnabled) {
+        // Manually sync to cloud when adding a new school
+        await SchoolSyncService.saveSchool(key, config);
+        console.log("New school synced to cloud:", key);
+      }
+    } catch (error) {
+      console.error("Failed to sync new school to cloud:", error);
+    }
 
     // Auto-select the new school
     setSelectedSchool(key);
@@ -80,6 +91,10 @@ function App() {
   // Handle deleting a school
   const handleDeleteSchool = async (key: string) => {
     try {
+      // Check if cloud sync is enabled first
+      const isCloudEnabled =
+        localStorage.getItem("cloudSyncEnabled") === "true";
+
       // Remove from local state first
       const updated = { ...customSchools };
       delete updated[key];
@@ -94,8 +109,22 @@ function App() {
         setVersions([]);
       }
 
-      // handleSyncComplete will trigger cloud sync through CloudSync component
-      handleSyncComplete(updated);
+      // If cloud sync is enabled, delete from cloud directly
+      if (isCloudEnabled) {
+        try {
+          await SchoolSyncService.deleteSchool(key);
+          console.log("School deleted from cloud:", key);
+        } catch (error) {
+          console.error("Failed to delete school from cloud:", error);
+          // Re-add the school to local state if cloud delete fails
+          setCustomSchools({ ...updated, [key]: customSchools[key] });
+          localStorage.setItem(
+            "customSchools",
+            JSON.stringify({ ...updated, [key]: customSchools[key] })
+          );
+          throw new Error("Failed to delete school from cloud");
+        }
+      }
     } catch (error) {
       console.error("Error deleting school:", error);
     }

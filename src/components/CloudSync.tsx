@@ -29,35 +29,46 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
     setIsCloudEnabled(enabled);
   }, []); // Only on mount
 
-  // Handle cloud sync state changes and subscriptions
+  // Handle cloud sync state changes
   useEffect(() => {
     localStorage.setItem("cloudSyncEnabled", String(isCloudEnabled));
     console.log("Cloud sync state updated:", isCloudEnabled);
 
     if (isCloudEnabled) {
-      console.log("Cloud sync enabled, subscribing to updates");
-      const unsubscribe = SchoolSyncService.subscribeToSchools((schools) => {
-        onSyncComplete(schools);
-      });
-
-      return () => {
-        console.log("Unsubscribing from cloud updates");
-        unsubscribe();
-      };
+      // When first enabled, only fetch from cloud
+      handleSyncFromCloud();
     }
   }, [isCloudEnabled]); // Only when cloud sync is toggled
 
-  // Debounced sync effect
+  // Handle real-time updates subscription
   useEffect(() => {
     if (!isCloudEnabled) return;
 
-    const timer = setTimeout(() => {
-      console.log("Debounced sync to cloud", customSchools);
-      handleSyncToCloud();
-    }, 2000); // Debounce for 2 seconds
+    console.log("Setting up cloud subscription");
+    const unsubscribe = SchoolSyncService.subscribeToSchools((cloudSchools) => {
+      // Only update if there are actual differences
+      const cloudKeys = Object.keys(cloudSchools);
+      const localKeys = Object.keys(customSchools);
 
-    return () => clearTimeout(timer);
-  }, [customSchools, isCloudEnabled]);
+      if (
+        JSON.stringify(cloudKeys.sort()) !== JSON.stringify(localKeys.sort())
+      ) {
+        console.log("Received different schools from cloud");
+        onSyncComplete(cloudSchools);
+      }
+    });
+
+    return () => {
+      console.log("Cleaning up cloud subscription");
+      unsubscribe();
+    };
+  }, [isCloudEnabled, customSchools]); // Re-subscribe when schools change
+
+  // Manual sync to cloud - only triggered by user action or initial enable
+  const syncToCloudDebounced = useCallback(() => {
+    if (!isCloudEnabled) return;
+    handleSyncToCloud();
+  }, [isCloudEnabled]);
   const handleSyncToCloud = async () => {
     if (!isCloudEnabled) {
       console.log("Cloud sync is disabled, skipping sync");
@@ -106,10 +117,24 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
     setMessage("");
 
     try {
-      const schools = await SchoolSyncService.getAllSchools();
-      onSyncComplete(schools);
-      setSyncStatus("success");
-      setMessage(t.syncedFromCloud);
+      const cloudSchools = await SchoolSyncService.getAllSchools();
+
+      // Only update if there are actual differences
+      const cloudKeys = Object.keys(cloudSchools);
+      const localKeys = Object.keys(customSchools);
+
+      if (
+        JSON.stringify(cloudKeys.sort()) !== JSON.stringify(localKeys.sort())
+      ) {
+        console.log("Updating local schools from cloud");
+        onSyncComplete(cloudSchools);
+        setSyncStatus("success");
+        setMessage(t.syncedFromCloud);
+      } else {
+        console.log("Local schools already match cloud");
+        setSyncStatus("success");
+        setMessage("Schools are already in sync");
+      }
       setTimeout(() => setSyncStatus("idle"), 3000);
     } catch (error) {
       setSyncStatus("error");
