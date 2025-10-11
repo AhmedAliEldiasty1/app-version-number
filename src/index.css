@@ -1652,13 +1652,26 @@ code {
 @media (max-width: 768px) {
   .container {
     padding: 16px;
+    /* Add padding to prevent the fixed button from overlapping content */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px) + 48px);
   }
 
+  /* Reset the desktop position first */
+  .language-toggle {
+    position: static;
+    top: auto;
+    right: auto;
+    margin: 0;
+  }
+
+  /* Then apply the mobile fixed positioning */
   .language-toggle {
     position: fixed;
-    top: auto;
-    bottom: 20px;
-    right: 20px;
+    z-index: 1000; /* Ensure button stays on top */
+    bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    right: max(20px, env(safe-area-inset-right, 20px));
+    left: auto;
+    margin: 0;
     padding: 12px 20px;
     border-radius: 24px;
     background: #667eea;
@@ -1669,48 +1682,76 @@ code {
     gap: 8px;
     font-size: 16px;
     min-height: 48px;
-    transform-origin: right bottom;
+    min-width: 48px;
+    transform-origin: center center;
     transform: scale(1);
     transition: all 0.2s ease;
+    -webkit-transform: scale(1);
+    -webkit-transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    will-change: transform;
   }
 
   .language-toggle:active {
     transform: scale(0.95);
+    -webkit-transform: scale(0.95);
   }
 
   .language-toggle::before {
     content: '';
-    display: inline-block;
+    display: block;
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     margin-right: 8px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .language-toggle span {
     display: inline-block;
     font-weight: 600;
+    white-space: nowrap;
   }
 
+  /* RTL Support with Safari fixes */
   [dir="rtl"] .language-toggle {
     right: auto;
-    left: 20px;
-    transform-origin: left bottom;
+    left: max(20px, env(safe-area-inset-left, 20px));
+    transform-origin: center center;
+    -webkit-transform-origin: center center;
   }
 
-  /* Add safe area padding for modern mobile devices */
-  @supports(padding: max(0px)) {
+  [dir="rtl"] .language-toggle::before {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+
+  /* iOS specific fixes */
+  @supports (-webkit-touch-callout: none) {
     .language-toggle {
-      bottom: max(20px, env(safe-area-inset-bottom));
-      right: max(20px, env(safe-area-inset-right));
+      /* Prevent button from being hidden under Safari's bottom bar */
+      bottom: max(20px, env(safe-area-inset-bottom, 20px));
+      /* Add padding to handle the home indicator area */
+      padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
     }
 
-    [dir="rtl"] .language-toggle {
-      left: max(20px, env(safe-area-inset-left));
-      right: auto;
+    .container {
+      /* Adjust container padding for iOS */
+      padding-bottom: max(calc(20px + 48px), calc(env(safe-area-inset-bottom, 0px) + 68px));
+    }
+  }
+
+  /* Ensure proper rendering on iOS */
+  @supports (not (backdrop-filter: none)) and (-webkit-overflow-scrolling: touch) {
+    .language-toggle {
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
   }
 }
