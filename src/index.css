@@ -279,8 +279,15 @@ code {
 }
 
 .language-toggle::before {
-  content: '🌐';
-  font-size: 18px;
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23667eea'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-right: 8px;
   animation: rotate 3s linear infinite;
 }
 
@@ -1641,3 +1648,69 @@ code {
   }
 }
 
+/* Mobile Language Switch Styles */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .language-toggle {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    background: #667eea;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    min-height: 48px;
+    transform-origin: right bottom;
+    transform: scale(1);
+    transition: all 0.2s ease;
+  }
+
+  .language-toggle:active {
+    transform: scale(0.95);
+  }
+
+  .language-toggle::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 8px;
+  }
+
+  .language-toggle span {
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  [dir="rtl"] .language-toggle {
+    right: auto;
+    left: 20px;
+    transform-origin: left bottom;
+  }
+
+  /* Add safe area padding for modern mobile devices */
+  @supports(padding: max(0px)) {
+    .language-toggle {
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: max(20px, env(safe-area-inset-right));
+    }
+
+    [dir="rtl"] .language-toggle {
+      left: max(20px, env(safe-area-inset-left));
+      right: auto;
+    }
+  }
+}
