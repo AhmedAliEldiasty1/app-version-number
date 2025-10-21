@@ -23,6 +23,7 @@ export interface Translations {
   // App Types
   employeeApp: string;
   parentApp: string;
+  ta3lomApp: string;
 
   // Tabs
   listVersionsTab: string;

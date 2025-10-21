@@ -21,6 +21,7 @@ export const en = {
   // App Types
   employeeApp: "👨‍💼 Employee App",
   parentApp: "👨‍👩‍👧 Parent App",
+  ta3lomApp: "📚 Ta3lom App",
 
   // Tabs
   listVersionsTab: "📋 List Versions",
