@@ -2,7 +2,9 @@
  * English translations
  */
 
-export const en = {
+import { Translations } from "./translations";
+
+export const en: Translations = {
   // Header
   appTitle: "📱 App Version Manager",
   appSubtitle: "Manage mobile app versions for different applications",
@@ -33,8 +35,8 @@ export const en = {
   ios: "iOS",
   android: "Android",
   refreshData: "🔄 Refresh Data",
-  loading: "Loading",
-  loadingVersions: "Loading versions...",
+  loading: "⏳ Loading",
+  loadingVersions: "⏳ Loading versions...",
   version: "Version",
   active: "Active",
   inactive: "Inactive",
@@ -47,7 +49,7 @@ export const en = {
   noVersionsFound: 'No versions found. Click "Refresh Data" to load versions.',
   clickToToggle: "Click to toggle status",
   togglingStatus: "Toggling status...",
-  updating: "Updating...",
+  updating: "⏳ Updating...",
 
   // Version Form
   addUpdateVersionTitle: "➕ Add/Update Version",
@@ -62,7 +64,7 @@ export const en = {
   status: "Status",
   selectStatusPlaceholder: "Select status...",
   statusHelp: "Active versions will be available for app updates",
-  submittingVersion: "Submitting version...",
+  submittingVersion: "⏳ Submitting version...",
   saveVersion: "💾 Save Version",
   resetForm: "🔄 Reset Form",
 
@@ -99,7 +101,7 @@ export const en = {
   apiUrlRequired: "API URL is required",
   invalidUrlFormat: "Invalid URL format",
   schoolAddedSuccess: "School added successfully!",
-  cancel: "Cancel",
+  cancel: "❌ Cancel",
   save: "💾 Save",
   close: "✕ Close",
 
@@ -108,7 +110,7 @@ export const en = {
   viewAllSchools: "View All Schools",
   customSchoolsTitle: "📋 Custom Schools",
   allSchoolsTitle: "📋 All Schools",
-  deleteSchool: "Delete School",
+  deleteSchool: "🗑️ Delete School",
   confirmDeleteSchool: "⚠️ Are you sure you want to delete this school?",
   deleteConfirm: "🗑️ Delete",
   schoolDeletedSuccess: "School deleted successfully!",
