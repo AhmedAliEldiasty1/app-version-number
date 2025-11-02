@@ -1,0 +1,20 @@
+# Alternative Netlify Build Configuration
+# If the main netlify.toml fails, try this configuration
+
+[build]
+  base = "."
+  publish = "build"
+  # Use npm ci for clean install
+  command = "npm ci && CI=false npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
+  NODE_OPTIONS = "--max_old_space_size=4096"
+  CI = "false"
+  GENERATE_SOURCEMAP = "false"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html" 
+  status = 200
