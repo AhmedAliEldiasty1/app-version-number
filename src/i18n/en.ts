@@ -34,6 +34,8 @@ export const en: Translations = {
   platform: "Platform",
   ios: "iOS",
   android: "Android",
+  huawei: "Huawei",
+  all: "All Platforms",
   refreshData: "🔄 Refresh Data",
   loading: "⏳ Loading",
   loadingVersions: "⏳ Loading versions...",

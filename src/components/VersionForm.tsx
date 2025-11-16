@@ -89,8 +89,10 @@ const VersionForm: React.FC<VersionFormProps> = ({
    */
   const platformOptions = useMemo<PlatformOption[]>(
     () => [
-      { value: "ios", label: t.ios, icon: "" },
+      { value: "ios", label: t.ios, icon: "📱" },
       { value: "android", label: t.android, icon: "🤖" },
+      { value: "huawei", label: t.huawei, icon: "📱" },
+      { value: "all", label: t.all, icon: "🌐" },
     ],
     [t]
   );
@@ -178,19 +180,43 @@ const VersionForm: React.FC<VersionFormProps> = ({
       setSuccess("");
 
       try {
-        const submitData: SubmitData = {
+        const baseSubmitData: Omit<SubmitData, 'type'> = {
           version: formData.version.trim(),
-          type: formData.type,
           is_active: formData.is_active === "true",
         };
 
-        await onSubmit(submitData);
+        // Handle "all platforms" option
+        if (formData.type === "all") {
+          const platforms = ["ios", "android", "huawei"];
+          const promises = platforms.map(platform => 
+            onSubmit({
+              ...baseSubmitData,
+              type: platform,
+            })
+          );
+          
+          await Promise.all(promises);
+          
+          setSuccess(
+            `${t.version} ${baseSubmitData.version} ${
+              baseSubmitData.is_active ? t.versionActivated : t.versionDeactivated
+            } ${t.versionSavedSuccess} ${t.all}`
+          );
+        } else {
+          // Single platform submission
+          const submitData: SubmitData = {
+            ...baseSubmitData,
+            type: formData.type,
+          };
 
-        setSuccess(
-          `${t.version} ${submitData.version} ${
-            submitData.is_active ? t.versionActivated : t.versionDeactivated
-          } ${t.versionSavedSuccess}`
-        );
+          await onSubmit(submitData);
+
+          setSuccess(
+            `${t.version} ${submitData.version} ${
+              submitData.is_active ? t.versionActivated : t.versionDeactivated
+            } ${t.versionSavedSuccess}`
+          );
+        }
 
         // Keep form data for easier updates
       } catch (err) {

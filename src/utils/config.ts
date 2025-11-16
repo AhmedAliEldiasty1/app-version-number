@@ -16,10 +16,6 @@ interface AppConfigs {
 
 // Original configurations (will be encrypted)
 const ORIGINAL_CONFIGS: AppConfigs = {
-  "ibn-khaldun": {
-    name: "ابن خلدون",
-    baseUrl: "https://api.system.ouredu.net/api/v1/ar",
-  },
   "dar-al-ahfad": {
     name: "دار الاحفاد",
     baseUrl: "https://api.dar-al-ahfad.ouredu.net/api/v1/ar",

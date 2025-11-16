@@ -229,6 +229,7 @@ const VersionList: React.FC<VersionListProps> = ({
           >
             <option value="ios">{t.ios}</option>
             <option value="android">{t.android}</option>
+            <option value="huawei">{t.huawei}</option>
           </select>
         </div>
         <button

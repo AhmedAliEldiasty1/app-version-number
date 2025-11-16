@@ -34,6 +34,8 @@ export interface Translations {
   platform: string;
   ios: string;
   android: string;
+  huawei: string;
+  all: string;
   refreshData: string;
   loading: string;
   loadingVersions: string;
