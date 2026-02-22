@@ -8,7 +8,6 @@ import SchoolList from "./components/SchoolList";
 import { CloudSync } from "./components/CloudSync";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
-import { APP_CONFIGS } from "./utils/config";
 import { SchoolSyncService } from "./utils/schoolSync";
 
 /**
@@ -47,7 +46,7 @@ function App() {
   >({});
 
   const currentConfig = selectedSchool
-    ? customSchools[selectedSchool] || APP_CONFIGS[selectedSchool]
+    ? customSchools[selectedSchool]
     : null;
 
   // Load custom schools from localStorage on mount
@@ -300,7 +299,7 @@ function App() {
       >
         <SchoolManager onAddSchool={handleAddSchool} />
         <SchoolList
-          allSchools={{ ...APP_CONFIGS, ...customSchools }}
+          allSchools={{ ...customSchools }}
           customSchools={customSchools}
           onDeleteSchool={handleDeleteSchool}
         />
@@ -316,7 +315,7 @@ function App() {
         selectedAppType={selectedAppType}
         onSchoolChange={setSelectedSchool}
         onAppTypeChange={setSelectedAppType}
-        appConfigs={{ ...APP_CONFIGS, ...customSchools }}
+        appConfigs={{ ...customSchools }}
       />
 
       <div className="tabs">
