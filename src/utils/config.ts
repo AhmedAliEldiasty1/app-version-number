@@ -16,18 +16,6 @@ interface AppConfigs {
 
 // Original configurations (will be encrypted)
 const ORIGINAL_CONFIGS: AppConfigs = {
-  "dar-al-ahfad": {
-    name: "دار الاحفاد",
-    baseUrl: "https://api.dar-al-ahfad.ouredu.net/api/v1/ar",
-  },
-  "al-taib": {
-    name: "الكلم الطيب",
-    baseUrl: "https://api.altaib.system.ouredu.net/api/v1/ar",
-  },
-  "high-gate": {
-    name: "High Gate",
-    baseUrl: "https://api.high-gate.system.ouredu.net/api/v1/ar",
-  },
   testing: {
     name: "Testing",
     baseUrl: "https://testing.oetest.tech/api/v1/ar",
