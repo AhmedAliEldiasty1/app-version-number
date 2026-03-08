@@ -6,7 +6,7 @@ import { useLanguage } from "../i18n/LanguageContext";
  */
 interface FormData {
   version: string;
-  type: string;
+  device_type: string;
   is_active: string;
 }
 
@@ -33,7 +33,7 @@ interface StatusOption {
  */
 interface SubmitData {
   version: string;
-  type: string;
+  device_type: string;
   is_active: boolean;
 }
 
@@ -75,7 +75,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
   // Form state
   const [formData, setFormData] = useState<FormData>({
     version: "",
-    type: "",
+    device_type: "",
     is_active: "",
   });
 
@@ -117,7 +117,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
         selectedSchool &&
           selectedAppType &&
           formData.version &&
-          formData.type &&
+          formData.device_type &&
           formData.is_active &&
           !loading
       ),
@@ -180,23 +180,23 @@ const VersionForm: React.FC<VersionFormProps> = ({
       setSuccess("");
 
       try {
-        const baseSubmitData: Omit<SubmitData, 'type'> = {
+        const baseSubmitData: Omit<SubmitData, 'device_type'> = {
           version: formData.version.trim(),
           is_active: formData.is_active === "true",
         };
 
         // Handle "all platforms" option
-        if (formData.type === "all") {
+        if (formData.device_type === "all") {
           const platforms = ["ios", "android", "huawei"];
           const promises = platforms.map(platform => 
             onSubmit({
               ...baseSubmitData,
-              type: platform,
+              device_type: platform,
             })
           );
-          
+
           await Promise.all(promises);
-          
+
           setSuccess(
             `${t.version} ${baseSubmitData.version} ${
               baseSubmitData.is_active ? t.versionActivated : t.versionDeactivated
@@ -206,7 +206,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
           // Single platform submission
           const submitData: SubmitData = {
             ...baseSubmitData,
-            type: formData.type,
+            device_type: formData.device_type,
           };
 
           await onSubmit(submitData);
@@ -243,7 +243,7 @@ const VersionForm: React.FC<VersionFormProps> = ({
   const handleReset = useCallback(() => {
     setFormData({
       version: "",
-      type: "",
+      device_type: "",
       is_active: "",
     });
     setError("");
@@ -287,8 +287,8 @@ const VersionForm: React.FC<VersionFormProps> = ({
           </label>
           <select
             id="typeSelect"
-            name="type"
-            value={formData.type}
+            name="device_type"
+            value={formData.device_type}
             onChange={handleInputChange}
             required
             disabled={!isConfigComplete}

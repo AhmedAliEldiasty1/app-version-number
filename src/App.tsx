@@ -16,7 +16,7 @@ import { SchoolSyncService } from "./utils/schoolSync";
 interface VersionData {
   id?: string | number;
   version: string;
-  type: string;
+  device_type: string;
   is_active: boolean;
   app_name?: string;
   created_at?: string;
@@ -231,7 +231,7 @@ function App() {
 
     if (
       !versionData.version ||
-      !versionData.type ||
+      !versionData.device_type ||
       versionData.is_active === undefined
     ) {
       throw new Error("Missing required version data");
@@ -246,7 +246,7 @@ function App() {
           app_name: selectedAppType,
           version: versionData.version,
           is_active: versionData.is_active,
-          type: versionData.type,
+          device_type: versionData.device_type,
         },
       },
     };

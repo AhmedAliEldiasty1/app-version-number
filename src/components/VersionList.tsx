@@ -7,7 +7,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 interface VersionData {
   id?: string | number;
   version: string;
-  type: string;
+  device_type: string;
   is_active: boolean;
   app_name?: string;
   created_at?: string;
@@ -74,13 +74,13 @@ const VersionList: React.FC<VersionListProps> = ({
     async (versionData: VersionData) => {
       if (!onToggleStatus || togglingVersion) return;
 
-      const versionKey = `${versionData.version}-${versionData.type}`;
+      const versionKey = `${versionData.version}-${versionData.device_type}`;
       setTogglingVersion(versionKey);
 
       try {
         await onToggleStatus({
           version: versionData.version,
-          type: versionData.type,
+          device_type: versionData.device_type,
           is_active: !versionData.is_active,
         });
 
@@ -135,7 +135,7 @@ const VersionList: React.FC<VersionListProps> = ({
   const renderVersionCard = useCallback(
     (version: VersionData, index: number) => {
       const versionData = formatVersionData(version);
-      const versionKey = `${versionData.version}-${versionData.type}`;
+      const versionKey = `${versionData.version}-${versionData.device_type}`;
       const isToggling = togglingVersion === versionKey;
 
       return (
@@ -178,7 +178,7 @@ const VersionList: React.FC<VersionListProps> = ({
               {versionData.app_name || selectedAppType}
             </div>
             <div>
-              <strong>{t.platform}:</strong> {versionData.type || platform}
+              <strong>{t.platform}:</strong> {versionData.device_type || platform}
             </div>
             {versionData.created_at && (
               <div>
