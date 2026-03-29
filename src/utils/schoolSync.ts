@@ -5,6 +5,7 @@ import {
   getDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   onSnapshot,
   Timestamp,
 } from "firebase/firestore";
@@ -48,6 +49,41 @@ export class SchoolSyncService {
   }
 
   /**
+   * Update a school in the cloud
+   */
+  static async updateSchool(key: string, config: SchoolConfig): Promise<void> {
+    return rateLimitedOperation(async () => {
+      try {
+        const schoolRef = doc(db, SCHOOLS_COLLECTION, key);
+        
+        // Check if document exists first
+        const exists = await getDoc(schoolRef);
+        if (!exists.exists()) {
+          console.warn(`School ${key} does not exist in cloud, creating it`);
+          // If it doesn't exist, create it
+          await setDoc(schoolRef, {
+            ...config,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
+          return;
+        }
+
+        // Update existing document
+        await updateDoc(schoolRef, {
+          name: config.name,
+          baseUrl: config.baseUrl,
+          updatedAt: Timestamp.now(),
+        });
+        console.log(`Successfully updated school ${key} in Firestore`);
+      } catch (error) {
+        console.error("Error updating school in cloud:", error);
+        throw error;
+      }
+    });
+  }
+
+  /**
    * Get a specific school from the cloud
    */
   static async getSchool(key: string): Promise<SchoolConfig | null> {
@@ -60,8 +96,8 @@ export class SchoolSyncService {
         return {
           name: data.name,
           baseUrl: data.baseUrl,
-          createdAt: data.createdAt?.toDate(),
-          updatedAt: data.updatedAt?.toDate(),
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
+          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
         };
       }
       return null;
@@ -85,8 +121,8 @@ export class SchoolSyncService {
         schools[doc.id] = {
           name: data.name,
           baseUrl: data.baseUrl,
-          createdAt: data.createdAt?.toDate(),
-          updatedAt: data.updatedAt?.toDate(),
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
+          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
         };
       });
 
@@ -186,8 +222,8 @@ export class SchoolSyncService {
           schools[doc.id] = {
             name: data.name,
             baseUrl: data.baseUrl,
-            createdAt: data.createdAt?.toDate(),
-            updatedAt: data.updatedAt?.toDate(),
+            createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
+            updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
           };
         });
         callback(schools);

@@ -110,6 +110,9 @@ export interface Translations {
   viewAllSchools: string;
   customSchoolsTitle: string;
   allSchoolsTitle: string;
+  updateSchool: string;
+  updateSchoolTitle: string;
+  schoolUpdatedSuccess: string;
   deleteSchool: string;
   confirmDeleteSchool: string;
   deleteConfirm: string;

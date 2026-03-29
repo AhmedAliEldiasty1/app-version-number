@@ -10,12 +10,14 @@ interface SchoolListProps {
   allSchools: Record<string, SchoolConfig>;
   customSchools: Record<string, SchoolConfig>;
   onDeleteSchool: (key: string) => void;
+  onUpdateSchool?: (key: string) => void;
 }
 
 const SchoolList: React.FC<SchoolListProps> = ({
   allSchools,
   customSchools,
   onDeleteSchool,
+  onUpdateSchool,
 }) => {
   const { t } = useLanguage();
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -111,13 +113,22 @@ const SchoolList: React.FC<SchoolListProps> = ({
                 ) : (
                   <>
                     {isCustomSchool(key) ? (
-                      <button
-                        className="btn-delete-school"
-                        onClick={() => handleDeleteClick(key)}
-                        aria-label={`${t.deleteSchool} ${config.name}`}
-                      >
-                        🗑️
-                      </button>
+                      <div className="school-item-actions">
+                        <button
+                          className="btn-update-school"
+                          onClick={() => onUpdateSchool?.(key)}
+                          aria-label={`${t.updateSchool} ${config.name}`}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn-delete-school"
+                          onClick={() => handleDeleteClick(key)}
+                          aria-label={`${t.deleteSchool} ${config.name}`}
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     ) : (
                       <div
                         className="btn-delete-school disabled"

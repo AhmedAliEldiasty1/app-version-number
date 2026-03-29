@@ -5,6 +5,7 @@ import VersionList from "./components/VersionList";
 import VersionForm from "./components/VersionForm";
 import SchoolManager from "./components/SchoolManager";
 import SchoolList from "./components/SchoolList";
+import SchoolUpdater from "./components/SchoolUpdater";
 import { CloudSync } from "./components/CloudSync";
 import { useLanguage } from "./i18n/LanguageContext";
 import { secureApi } from "./utils/apiService";
@@ -44,6 +45,7 @@ function App() {
   const [customSchools, setCustomSchools] = useState<
     Record<string, { name: string; baseUrl: string }>
   >({});
+  const [updatingSchool, setUpdatingSchool] = useState<string | null>(null);
 
   const currentConfig = selectedSchool
     ? customSchools[selectedSchool]
@@ -85,6 +87,35 @@ function App() {
 
     // Auto-select the new school
     setSelectedSchool(key);
+  };
+
+  // Handle updating a school
+  const handleUpdateSchool = async (
+    key: string,
+    config: { name: string; baseUrl: string }
+  ) => {
+    const updated = { ...customSchools, [key]: config };
+    setCustomSchools(updated);
+    localStorage.setItem("customSchools", JSON.stringify(updated));
+
+    try {
+      const isCloudEnabled =
+        localStorage.getItem("cloudSyncEnabled") === "true";
+      if (isCloudEnabled) {
+        console.log("Attempting to update school in cloud:", key, config);
+        await SchoolSyncService.updateSchool(key, config);
+        console.log("School updated in cloud successfully:", key);
+        
+        // Fetch updated data from cloud to ensure UI reflects changes
+        const updatedFromCloud = await SchoolSyncService.getSchool(key);
+        console.log("Verified update from cloud:", updatedFromCloud);
+      }
+    } catch (error) {
+      console.error("Failed to update school in cloud:", error);
+      // Keep the local changes even if cloud sync failed
+    }
+
+    setUpdatingSchool(null);
   };
 
   // Handle deleting a school
@@ -289,6 +320,15 @@ function App() {
         </button>
       </header>
 
+      {updatingSchool && customSchools[updatingSchool] && (
+        <SchoolUpdater
+          schoolKey={updatingSchool}
+          currentConfig={customSchools[updatingSchool]}
+          onUpdateSchool={handleUpdateSchool}
+          onCancel={() => setUpdatingSchool(null)}
+        />
+      )}
+
       <div
         style={{
           display: "flex",
@@ -302,6 +342,7 @@ function App() {
           allSchools={{ ...customSchools }}
           customSchools={customSchools}
           onDeleteSchool={handleDeleteSchool}
+          onUpdateSchool={(key) => setUpdatingSchool(key)}
         />
       </div>
 
