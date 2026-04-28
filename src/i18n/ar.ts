@@ -22,7 +22,7 @@ export const ar: Translations = {
   // App Types
   employeeApp: "👨‍💼 تطبيق الموظفين",
   parentApp: "👨‍👩‍👧 تطبيق أولياء الأمور",
-  ta3lomApp: "📚 تطبيق تعلم",
+  lmsApp: "📚 تطبيق LMS",
 
   // Tabs
   listVersionsTab: "📋 قائمة الإصدارات",

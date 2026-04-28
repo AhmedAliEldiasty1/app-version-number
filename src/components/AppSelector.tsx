@@ -56,7 +56,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({
     () => [
       { value: "employee", name: t.employeeApp, icon: "👨‍💼" },
       { value: "OurEducation", name: t.parentApp, icon: "👨‍👩‍👧" },
-      { value: "ta3lom", name: t.ta3lomApp, icon: "📚" },
+      { value: "LMS", name: t.lmsApp, icon: "📚" },
     ],
     [t]
   );

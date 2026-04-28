@@ -23,7 +23,7 @@ export const en: Translations = {
   // App Types
   employeeApp: "👨‍💼 Employee App",
   parentApp: "👨‍👩‍👧 Parent App",
-  ta3lomApp: "📚 Ta3lom App",
+  lmsApp: "📚 LMS App",
 
   // Tabs
   listVersionsTab: "📋 List Versions",
