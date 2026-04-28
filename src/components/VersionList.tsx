@@ -72,11 +72,12 @@ const VersionList: React.FC<VersionListProps> = ({
    */
   const handleToggleStatus = useCallback(
     async (versionData: VersionData) => {
+      console.log("Toggling status for version:", versionData);
       if (!onToggleStatus || togglingVersion) return;
 
       const versionKey = `${versionData.version}-${versionData.device_type}`;
       setTogglingVersion(versionKey);
-
+      console.log("Toggling version key:", versionKey);
       try {
         await onToggleStatus({
           version: versionData.version,
@@ -102,7 +103,11 @@ const VersionList: React.FC<VersionListProps> = ({
    * @returns Formatted version data
    */
   const formatVersionData = useCallback((version: VersionData): VersionData => {
-    return version?.attributes || version;
+    const base = version?.attributes ? { ...version, ...version.attributes } : version;
+    if (!base.device_type && (base as any).type) {
+      return { ...base, device_type: (base as any).type };
+    }
+    return base;
   }, []);
 
   /**
