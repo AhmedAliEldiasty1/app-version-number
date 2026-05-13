@@ -38,7 +38,8 @@ export class SchoolSyncService {
       try {
         const schoolRef = doc(db, SCHOOLS_COLLECTION, key);
         await setDoc(schoolRef, {
-          ...config,
+          name: config.name,
+          baseUrl: config.baseUrl,
           tenantId: config.tenantId ?? null,
           updatedAt: Timestamp.now(),
           createdAt: Timestamp.now(),
@@ -64,7 +65,8 @@ export class SchoolSyncService {
           console.warn(`School ${key} does not exist in cloud, creating it`);
           // If it doesn't exist, create it
           await setDoc(schoolRef, {
-            ...config,
+            name: config.name,
+            baseUrl: config.baseUrl,
             tenantId: config.tenantId ?? null,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -228,6 +230,7 @@ export class SchoolSyncService {
           schools[doc.id] = {
             name: data.name,
             baseUrl: data.baseUrl,
+            tenantId: data.tenantId ?? undefined,
             createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
             updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
           };
