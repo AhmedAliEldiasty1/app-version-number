@@ -168,7 +168,7 @@ function App() {
 
   // Handle cloud sync complete
   const handleSyncComplete = (
-    schools: Record<string, { name: string; baseUrl: string }>
+    schools: Record<string, { name: string; baseUrl: string; tenantId?: string }>
   ) => {
     setCustomSchools(schools);
     localStorage.setItem("customSchools", JSON.stringify(schools));

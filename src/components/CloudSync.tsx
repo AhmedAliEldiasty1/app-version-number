@@ -3,9 +3,9 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { SchoolSyncService } from "../utils/schoolSync";
 
 interface CloudSyncProps {
-  customSchools: Record<string, { name: string; baseUrl: string }>;
+  customSchools: Record<string, { name: string; baseUrl: string; tenantId?: string }>;
   onSyncComplete: (
-    schools: Record<string, { name: string; baseUrl: string }>
+    schools: Record<string, { name: string; baseUrl: string; tenantId?: string }>
   ) => void;
 }
 
@@ -37,13 +37,28 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
     try {
       const cloudSchools = await SchoolSyncService.getAllSchools();
 
-      // Only update if there are actual differences
-      const cloudKeys = Object.keys(cloudSchools);
-      const localKeys = Object.keys(customSchools);
+      // Update if there are any differences (keys or values including tenantId)
+      const cloudKeys = Object.keys(cloudSchools).sort();
+      const localKeys = Object.keys(customSchools).sort();
 
-      if (
-        JSON.stringify(cloudKeys.sort()) !== JSON.stringify(localKeys.sort())
-      ) {
+      const keysDiff = JSON.stringify(cloudKeys) !== JSON.stringify(localKeys);
+      let valuesDiff = false;
+      if (!keysDiff) {
+        for (const key of cloudKeys) {
+          const c = cloudSchools[key];
+          const l = customSchools[key];
+          if (
+            c.name !== l.name ||
+            c.baseUrl !== l.baseUrl ||
+            (c.tenantId ?? "") !== (l.tenantId ?? "")
+          ) {
+            valuesDiff = true;
+            break;
+          }
+        }
+      }
+
+      if (keysDiff || valuesDiff) {
         console.log("Updating local schools from cloud");
         onSyncComplete(cloudSchools);
         setSyncStatus("success");
@@ -96,7 +111,8 @@ export const CloudSync: React.FC<CloudSyncProps> = ({
           const localSchool = customSchools[key];
           if (
             cloudSchool.name !== localSchool.name ||
-            cloudSchool.baseUrl !== localSchool.baseUrl
+            cloudSchool.baseUrl !== localSchool.baseUrl ||
+            (cloudSchool.tenantId ?? "") !== (localSchool.tenantId ?? "")
           ) {
             valuesDifferent = true;
             console.log(`School ${key} values changed:`, {

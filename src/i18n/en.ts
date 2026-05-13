@@ -99,7 +99,7 @@ export const en: Translations = {
   apiBaseUrlPlaceholder: "https://api.example.com/api/v1/en",
   apiBaseUrlHelpText: "Full API endpoint URL (must start with https://)",
   tenantIdLabel: "Tenant ID (X-Tenant-ID)",
-  tenantIdPlaceholder: "e.g., school-tenant-123",
+  tenantIdPlaceholder: "e.g., 1",
   tenantIdHelp: "Unique tenant identifier sent as X-Tenant-ID header",
   schoolKeyRequired: "School key is required",
   schoolNameRequired: "School name is required",

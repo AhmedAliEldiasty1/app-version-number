@@ -99,7 +99,7 @@ export const ar: Translations = {
   apiBaseUrlPlaceholder: "https://api.example.com/api/v1/ar",
   apiBaseUrlHelpText: "رابط API الكامل (يجب أن يبدأ بـ https://)",
   tenantIdLabel: "معرّف المستأجر (X-Tenant-ID)",
-  tenantIdPlaceholder: "مثال: school-tenant-123",
+  tenantIdPlaceholder: "مثال: 1 ",
   tenantIdHelp: "معرّف المستأجر الفريد يُرسل كـ X-Tenant-ID في الطلبات",
   schoolKeyRequired: "معرّف المدرسة مطلوب",
   schoolNameRequired: "اسم المدرسة مطلوب",
