@@ -43,13 +43,19 @@ function App() {
   const [isSwitchingLanguage, setIsSwitchingLanguage] =
     useState<boolean>(false);
   const [customSchools, setCustomSchools] = useState<
-    Record<string, { name: string; baseUrl: string }>
+    Record<string, { name: string; baseUrl: string; tenantId?: string }>
   >({});
   const [updatingSchool, setUpdatingSchool] = useState<string | null>(null);
 
   const currentConfig = selectedSchool
     ? customSchools[selectedSchool]
     : null;
+
+  // Sync X-Tenant-ID header when selected school changes
+  useEffect(() => {
+    const tenantId = currentConfig?.tenantId ?? null;
+    secureApi.setTenantId(tenantId);
+  }, [currentConfig]);
 
   // Load custom schools from localStorage on mount
   useEffect(() => {
@@ -66,7 +72,7 @@ function App() {
   // Handle adding new school
   const handleAddSchool = async (
     key: string,
-    config: { name: string; baseUrl: string }
+    config: { name: string; baseUrl: string; tenantId?: string }
   ) => {
     const updated = { ...customSchools, [key]: config };
     setCustomSchools(updated);
@@ -92,7 +98,7 @@ function App() {
   // Handle updating a school
   const handleUpdateSchool = async (
     key: string,
-    config: { name: string; baseUrl: string }
+    config: { name: string; baseUrl: string; tenantId?: string }
   ) => {
     const updated = { ...customSchools, [key]: config };
     setCustomSchools(updated);

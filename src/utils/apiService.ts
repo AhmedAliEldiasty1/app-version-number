@@ -9,6 +9,7 @@ import { sanitizeInput, validateApiResponse, apiRateLimiter } from "./security";
 class SecureApiService {
   private axiosInstance: AxiosInstance;
   private readonly timeout: number;
+  private currentTenantId: string | null = null;
 
   constructor() {
     this.timeout = 30000; // 30 seconds
@@ -37,6 +38,9 @@ class SecureApiService {
         // Add timestamp to prevent replay attacks
         if (config.headers) {
           config.headers["X-Request-Time"] = Date.now().toString();
+          if (this.currentTenantId) {
+            config.headers["X-Tenant-ID"] = this.currentTenantId;
+          }
         }
 
         // Log request (only in development)
@@ -72,6 +76,13 @@ class SecureApiService {
         return Promise.reject(sanitizedError);
       }
     );
+  }
+
+  /**
+   * Set the active tenant ID, injected as X-Tenant-ID on every request
+   */
+  setTenantId(id: string | null): void {
+    this.currentTenantId = id ?? null;
   }
 
   /**

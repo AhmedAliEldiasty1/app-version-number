@@ -15,6 +15,7 @@ import { rateLimitedOperation } from "./rateLimit";
 export interface SchoolConfig {
   name: string;
   baseUrl: string;
+  tenantId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -38,6 +39,7 @@ export class SchoolSyncService {
         const schoolRef = doc(db, SCHOOLS_COLLECTION, key);
         await setDoc(schoolRef, {
           ...config,
+          tenantId: config.tenantId ?? null,
           updatedAt: Timestamp.now(),
           createdAt: Timestamp.now(),
         });
@@ -63,6 +65,7 @@ export class SchoolSyncService {
           // If it doesn't exist, create it
           await setDoc(schoolRef, {
             ...config,
+            tenantId: config.tenantId ?? null,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
           });
@@ -73,6 +76,7 @@ export class SchoolSyncService {
         await updateDoc(schoolRef, {
           name: config.name,
           baseUrl: config.baseUrl,
+          tenantId: config.tenantId ?? null,
           updatedAt: Timestamp.now(),
         });
         console.log(`Successfully updated school ${key} in Firestore`);
@@ -96,6 +100,7 @@ export class SchoolSyncService {
         return {
           name: data.name,
           baseUrl: data.baseUrl,
+          tenantId: data.tenantId ?? undefined,
           createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
           updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
         };
@@ -121,6 +126,7 @@ export class SchoolSyncService {
         schools[doc.id] = {
           name: data.name,
           baseUrl: data.baseUrl,
+          tenantId: data.tenantId ?? undefined,
           createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : undefined,
           updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : undefined,
         };

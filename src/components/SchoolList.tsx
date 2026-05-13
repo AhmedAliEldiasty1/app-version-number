@@ -4,6 +4,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 interface SchoolConfig {
   name: string;
   baseUrl: string;
+  tenantId?: string;
 }
 
 interface SchoolListProps {
@@ -88,6 +89,9 @@ const SchoolList: React.FC<SchoolListProps> = ({
                     </div>
                   </div>
                   <p className="school-item-url">{config.baseUrl}</p>
+                  {config.tenantId && (
+                    <p className="school-item-tenant">Tenant: {config.tenantId}</p>
+                  )}
                 </div>
 
                 {deleteConfirm === key ? (

@@ -4,6 +4,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 interface SchoolConfig {
   name: string;
   baseUrl: string;
+  tenantId?: string;
 }
 
 interface SchoolUpdaterProps {
@@ -22,6 +23,7 @@ const SchoolUpdater: React.FC<SchoolUpdaterProps> = ({
   const { t } = useLanguage();
   const [schoolName, setSchoolName] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
+  const [tenantId, setTenantId] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -29,6 +31,7 @@ const SchoolUpdater: React.FC<SchoolUpdaterProps> = ({
   useEffect(() => {
     setSchoolName(currentConfig.name);
     setBaseUrl(currentConfig.baseUrl);
+    setTenantId(currentConfig.tenantId ?? "");
   }, [currentConfig]);
 
   const handleSubmit = useCallback(
@@ -60,6 +63,7 @@ const SchoolUpdater: React.FC<SchoolUpdaterProps> = ({
       onUpdateSchool(schoolKey, {
         name: schoolName.trim(),
         baseUrl: baseUrl.trim(),
+        tenantId: tenantId.trim() || undefined,
       });
 
       // Show success and reset form
@@ -75,12 +79,13 @@ const SchoolUpdater: React.FC<SchoolUpdaterProps> = ({
         onCancel();
       }, 2000);
     },
-    [schoolName, baseUrl, schoolKey, onUpdateSchool, t, onCancel]
+    [schoolName, baseUrl, tenantId, schoolKey, onUpdateSchool, t, onCancel]
   );
 
   const handleCancel = () => {
     setSchoolName(currentConfig.name);
     setBaseUrl(currentConfig.baseUrl);
+    setTenantId(currentConfig.tenantId ?? "");
     setError("");
     setSuccess("");
     onCancel();
@@ -130,6 +135,19 @@ const SchoolUpdater: React.FC<SchoolUpdaterProps> = ({
               className="form-input"
             />
             <span className="help-text">{t.apiBaseUrlHelpText}</span>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="updateTenantId">{t.tenantIdLabel}</label>
+            <input
+              id="updateTenantId"
+              type="text"
+              value={tenantId}
+              onChange={(e) => setTenantId(e.target.value)}
+              placeholder={t.tenantIdPlaceholder}
+              className="form-input"
+            />
+            <span className="help-text">{t.tenantIdHelp}</span>
           </div>
 
           <div className="form-group">

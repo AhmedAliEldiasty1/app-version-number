@@ -96,6 +96,9 @@ export interface Translations {
   apiBaseUrlLabel: string;
   apiBaseUrlPlaceholder: string;
   apiBaseUrlHelpText: string;
+  tenantIdLabel: string;
+  tenantIdPlaceholder: string;
+  tenantIdHelp: string;
   schoolKeyRequired: string;
   schoolNameRequired: string;
   apiUrlRequired: string;

@@ -4,6 +4,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 interface SchoolConfig {
   name: string;
   baseUrl: string;
+  tenantId?: string;
 }
 
 interface SchoolManagerProps {
@@ -16,6 +17,7 @@ const SchoolManager: React.FC<SchoolManagerProps> = ({ onAddSchool }) => {
   const [schoolKey, setSchoolKey] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
+  const [tenantId, setTenantId] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -60,6 +62,7 @@ const SchoolManager: React.FC<SchoolManagerProps> = ({ onAddSchool }) => {
       onAddSchool(key, {
         name: schoolName.trim(),
         baseUrl: baseUrl.trim(),
+        tenantId: tenantId.trim() || undefined,
       });
 
       // Show success and reset form
@@ -68,17 +71,19 @@ const SchoolManager: React.FC<SchoolManagerProps> = ({ onAddSchool }) => {
         setSchoolKey("");
         setSchoolName("");
         setBaseUrl("");
+        setTenantId("");
         setSuccess("");
         setIsOpen(false);
       }, 2000);
     },
-    [schoolKey, schoolName, baseUrl, onAddSchool, t]
+    [schoolKey, schoolName, baseUrl, tenantId, onAddSchool, t]
   );
 
   const handleCancel = () => {
     setSchoolKey("");
     setSchoolName("");
     setBaseUrl("");
+    setTenantId("");
     setError("");
     setSuccess("");
     setIsOpen(false);
@@ -153,6 +158,19 @@ const SchoolManager: React.FC<SchoolManagerProps> = ({ onAddSchool }) => {
                 className="form-input"
               />
               <span className="help-text">{t.apiBaseUrlHelpText}</span>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="tenantId">{t.tenantIdLabel}</label>
+              <input
+                id="tenantId"
+                type="text"
+                value={tenantId}
+                onChange={(e) => setTenantId(e.target.value)}
+                placeholder={t.tenantIdPlaceholder}
+                className="form-input"
+              />
+              <span className="help-text">{t.tenantIdHelp}</span>
             </div>
 
             {error && (
